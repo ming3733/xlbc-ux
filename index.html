@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZM-XL Design System</title>
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+:root {
+  /* ---- ZM-XL Design Tokens ---- */
+  --text-primary: #141414;
+  --text-secondary: #5D697A;
+  --text-tertiary: #9DA3A3;
+  --text-disabled: #C4C8CC;
+  --text-link: #4879A3;
+  --text-title: #33373D;
+  --text-body: #454A52;
+  --text-hint: #78828F;
+  --text-placeholder: #BCC3CC;
+
+  --text-inv-primary: rgba(255,255,255,1);
+  --text-inv-secondary: rgba(255,255,255,0.64);
+  --text-inv-tertiary: rgba(255,255,255,0.40);
+
+  --bg-page: #F5F7FA;
+  --bg-light: #F5F9FF;
+  --bg-card: #FFFFFF;
+  --bg-block: #F7F9FA;
+  --bg-input-disabled: #F7F8FA;
+
+  --divider-strong: #E1E3E6;
+  --divider-weak: #EDEEF0;
+
+  --mask-toast: rgba(0,0,0,0.72);
+  --mask-modal: rgba(0,0,0,0.56);
+  --mask-image: rgba(0,0,0,0.48);
+
+  --brand: #1E7CFF;
+  --brand-50: #E6F2FF;
+  --brand-100: #CCE5FF;
+  --brand-200: #99CBFF;
+  --brand-300: #66B0FF;
+  --brand-400: #3396FF;
+  --brand-500: #1E7CFF;
+  --brand-600: #1963CC;
+  --brand-700: #134A99;
+  --brand-800: #0C3266;
+  --brand-900: #061933;
+
+  --color-error: #FA655A;
+  --color-warning: #FF9911;
+  --color-success: #4BD175;
+
+  --accent-purple: #6B6DFF;
+  --accent-blue: #04B4FF;
+  --accent-violet: #9C70F8;
+  --accent-yellow: #FFD400;
+  --accent-pink: #FF6680;
+  --accent-cyan: #2ECAAA;
+
+  --input-placeholder: #BCC3CC;
+  --input-text: #141414;
+  --input-border: #E5E6EB;
+  --input-border-focus: #1E7CFF;
+  --input-border-error: #FA655A;
+  --input-bg: #FFFFFF;
+
+  --btn-blue-default: #1E7CFF;
+  --btn-blue-hover: #4795FF;
+  --btn-blue-active: #1B6EE0;
+  --btn-blue-disabled: #A5CBFF;
+
+  --btn-orange-default: #FF9911;
+  --btn-orange-hover: #FFA833;
+  --btn-orange-active: #F08D0A;
+  --btn-orange-disabled: #FFE0B7;
+
+  --gradient-primary: linear-gradient(to right, #3388FF, #725CFF);
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-xl: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-button: 0 2px 4px rgba(30,124,255,0.2);
+
+  /* 间距 */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 40px;
+  --space-2xl: 48px;
+  --space-3xl: 56px;
+  --space-4xl: 64px;
+
+  /* 圆角 */
+  --radius-sm: 24px;
+  --radius-md: 32px;
+  --radius-lg: 40px;
+  --radius-xl: 48px;
+  --radius-pc-sm: 12px;
+  --radius-pc-md: 16px;
+  --radius-pc-lg: 20px;
+  --radius-pc-xl: 24px;
+  --radius-full: 9999px;
+
+  --font-sans: -apple-system, "PingFang SC", "Helvetica Neue", "Noto Sans SC", sans-serif;
+  --font-mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+
+  --sidebar-width: 272px;
+  --ease-base: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fast: 150ms var(--ease-base);
+  --transition-base: 250ms var(--ease-base);
+}
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ========== Layout ========== */
+.layout { display: flex; min-height: 100vh; }
+
+/* ========== Sidebar ========== */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: var(--sidebar-width); height: 100vh;
+  background: var(--bg-card);
+  border-right: 1px solid var(--divider-weak);
+  display: flex; flex-direction: column;
+  z-index: 100; overflow-y: auto;
+  transition: transform var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar-brand { padding: 24px 20px 20px; border-bottom: 1px solid var(--divider-weak); }
+
+.brand-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-pc-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+.brand-icon svg { width: 20px; height: 20px; }
+
+.brand-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+.brand-tag { font-size: 11px; color: var(--text-tertiary); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding-left: 48px; }
+
+.sidebar-nav { flex: 1; padding: 12px 12px 24px; overflow-y: auto; }
+
+.nav-group-label {
+  font-size: 11px; font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 16px 12px 6px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer; transition: all var(--transition-fast);
+  text-decoration: none; margin-bottom: 1px;
+}
+.nav-item:hover { background: var(--bg-block); color: var(--text-primary); }
+.nav-item.active { background: rgba(30,124,255,0.08); color: var(--brand-500); }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.55; }
+.nav-item:hover svg { opacity: 0.85; }
+.nav-item.active svg { opacity: 1; color: var(--brand-500); }
+
+.nav-sub { padding-left: 30px; }
+.nav-sub .nav-item { font-size: 12.5px; padding: 5px 12px; }
+
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--divider-weak); font-size: 12px; color: var(--text-tertiary); }
+
+/* ========== Main ========== */
+.main { margin-left: var(--sidebar-width); flex: 1; min-width: 0; }
+
+/* ========== Topbar (mobile) ========== */
+.topbar {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px; background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider-weak);
+  z-index: 90; align-items: center; padding: 0 16px; gap: 12px;
+}
+.menu-btn {
+  background: none; border: 1px solid var(--divider-strong);
+  border-radius: 8px; color: var(--text-primary);
+  width: 36px; height: 36px; display: flex;
+  align-items: center; justify-content: center; cursor: pointer;
+}
+.menu-btn svg { width: 20px; height: 20px; }
+
+/* ========== Sections ========== */
+.section { padding: 80px 64px 100px; max-width: 1080px; margin: 0 auto; }
+.section-header { margin-bottom: 48px; }
+.section-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  color: var(--brand-500); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 12px;
+  padding: 4px 10px; background: var(--brand-50); border-radius: 100px;
+}
+.section-title { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 16px; color: var(--text-primary); }
+.section-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.7; max-width: 600px; }
+
+/* ========== Hero ========== */
+.hero {
+  padding: 100px 64px 80px; max-width: 1080px; margin: 0 auto;
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-page) 100%);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--brand-500);
+  background: var(--brand-50); border: 1px solid rgba(30,124,255,0.18);
+  border-radius: 100px; padding: 6px 16px; margin-bottom: 28px;
+}
+.hero-title { font-size: 56px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 24px; color: var(--text-primary); }
+.hero-subtitle { font-size: 18px; color: var(--text-secondary); line-height: 1.75; max-width: 540px; margin-bottom: 40px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ========== Buttons ========== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px; border-radius: var(--radius-full);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: all var(--transition-fast); border: none;
+  font-family: var(--font-sans); line-height: 1; white-space: nowrap;
+}
+.btn-primary { background: var(--btn-blue-default); color: #fff; }
+.btn-primary:hover { background: var(--btn-blue-hover); transform: translateY(-1px); box-shadow: var(--shadow-button); }
+.btn-orange { background: var(--btn-orange-default); color: #fff; border-radius: var(--radius-full); }
+.btn-orange:hover { background: var(--btn-orange-hover); }
+.btn-outline { background: transparent; color: var(--brand-500); border: 1.5px solid var(--brand-500); border-radius: var(--radius-full); padding: 13px 27px; }
+.btn-outline:hover { background: rgba(30,124,255,0.08); }
+.btn-ghost { background: transparent; color: var(--text-secondary); padding: 14px 20px; }
+.btn-ghost:hover { color: var(--brand-500); background: var(--brand-50); }
+.btn-sm { padding: 8px 18px; font-size: 13px; }
+
+/* ========== Color Swatches ========== */
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.color-swatch {
+  border-radius: var(--radius-pc-md); overflow: hidden;
+  border: 1px solid var(--divider-weak); transition: all var(--transition-fast); cursor: pointer;
+}
+.color-swatch:hover { border-color: var(--brand-400); transform: scale(1.02); box-shadow: var(--shadow-md); }
+.color-swatch-preview { height: 80px; display: flex; align-items: flex-end; padding: 10px; }
+.color-swatch-info { padding: 12px 14px; background: var(--bg-card); }
+.color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.color-swatch-value { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); }
+
+/* ========== Typography ========== */
+.type-preview {
+  padding: 28px; border: 1px solid var(--divider-weak);
+  border-radius: var(--radius-pc-md); margin-bottom: 12px;
+  background: var(--bg-card); transition: border-color var(--transition-fast);
+}
+.type-preview:hover { border-color: var(--brand-300); }
+.type-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--divider-weak); }
+.type-meta-item { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); background: var(--bg-block); padding: 2px 8px; border-radius: 4px; }
+
+/* ========== Spacing ========== */
+.spacing-grid { display: flex; flex-direction: column; gap: 16px; }
+.spacing-item {
+  display: flex; align-items: center; gap: 24px;
+  padding: 16px 20px; background: var(--bg-card);
+  border: 1px solid var(--divider-weak); border-radius: var(--radius-pc-md);
+  transition: all var(--transition-fast);
+}
+.spacing-item:hover { border-color: var(--brand-300); }
+.spacing-visual {
+  background: rgba(30,124,255,0.08); border: 1.5px dashed var(--brand-400);
+  border-radius: 6px; flex-shrink: 0; transition: all var(--transition-fast);
+}
+.spacing-item:hover .spacing-visual { background: rgba(30,124,255,0.15); border-color: var(--brand-500); }
+.spacing-info { display: flex; flex-direction: column; gap: 2px; }
+.spacing-label { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.spacing-value { font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); }
+
+/* ========== Shadows ========== */
+.shadow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.shadow-demo {
+  background: var(--bg-card); border: 1px solid var(--divider-weak);
+  border-radius: var(--radius-md); padding: 28px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  transition: all var(--transition-fast);
+}
+.shadow-demo:hover { border-color: var(--brand-300); }
+.shadow-box { width: 64px; height: 64px; border-radius: var(--radius-pc-md); background: var(--bg-card); }
+.shadow-demo-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.shadow-demo-value { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); text-align: center; }
+
+/* ========== Component Demo ========== */
+.component-block { margin-bottom: 52px; }
+.component-block-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.01em; color: var(--text-primary); }
+.component-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6; }
+.component-demo {
+  padding: 28px; background: var(--bg-card);
+  border: 1px solid var(--divider-weak); border-radius: var(--radius-pc-md);
+  margin-bottom: 12px; display: flex; flex-wrap: wrap;
+  align-items: center; gap: 12px; min-height: 80px;
+}
+
+/* ========== Code Block ========== */
+.code-block {
+  position: relative; background: #0D0D0F;
+  border: 1px solid #1E1E22; border-radius: var(--radius-pc-sm);
+  overflow: hidden; margin-bottom: 12px;
+}
+.code-block-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; border-bottom: 1px solid #1E1E22; font-size: 12px; color: #71717A; }
+.code-copy-btn { background: none; border: none; color: #71717A; cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 4px; transition: all var(--transition-fast); }
+.code-copy-btn:hover { color: #FAFAFA; background: #1E1E22; }
+.code-block pre { padding: 16px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.7; color: #A1A1AA; margin: 0; }
+
+.hl-tag { color: #F472B6; }
+.hl-attr { color: #93C5FD; }
+.hl-value { color: #86EFAC; }
+.hl-string { color: #FBBF24; }
+.hl-comment { color: #52525B; font-style: italic; }
+.hl-keyword { color: #A78BFA; }
+.hl-selector { color: #22D3EE; }
+.hl-property { color: #93C5FD; }
+.hl-punctuation { color: #71717A; }
+.hl-brand { color: #60A5FA; font-weight: 600; }
+
+/* ========== Input ========== */
+.input-group { display: flex; flex-direction: column; gap: 6px; min-width: 240px; }
+.input-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.input-field {
+  padding: 14px 16px; background: var(--input-bg);
+  border: 1.5px solid var(--input-border); border-radius: var(--radius-pc-md);
+  color: var(--input-text); font-size: 15px; font-family: var(--font-sans);
+  transition: all var(--transition-fast); outline: none; width: 100%; height: 48px;
+}
+.input-field::placeholder { color: var(--input-placeholder); }
+.input-field:hover { border-color: var(--text-tertiary); }
+.input-field:focus { border-color: var(--input-border-focus); box-shadow: 0 0 0 3px rgba(30,124,255,0.12); }
+.input-field.error { border-color: var(--color-error); }
+.input-field.error:focus { box-shadow: 0 0 0 3px rgba(250,101,90,0.12); }
+.input-hint { font-size: 12px; color: var(--text-tertiary); }
+.input-hint.error { color: var(--color-error); }
+
+/* ========== Card ========== */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.demo-card {
+  background: var(--bg-card); border: 1px solid var(--divider-weak);
+  border-radius: var(--radius-lg); overflow: hidden;
+  transition: all var(--transition-base); cursor: pointer;
+}
+.demo-card:hover { border-color: var(--brand-300); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.demo-card-img { height: 120px; display: flex; align-items: center; justify-content: center; }
+.demo-card-img.orange { background: linear-gradient(135deg, #FF9911, #FFA833); }
+.demo-card-img.green { background: linear-gradient(135deg, #4BD175, #22C55E); }
+.demo-card-body { padding: 20px; }
+.demo-card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+.demo-card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.demo-card-footer { padding: 0 20px 20px; display: flex; justify-content: space-between; align-items: center; }
+.demo-card-tag { font-size: 11px; font-weight: 600; color: var(--brand-500); background: var(--brand-50); padding: 3px 10px; border-radius: 100px; }
+.demo-card-tag.orange { color: var(--btn-orange-default); background: rgba(255,153,17,0.10); }
+.demo-card-tag.green { color: var(--color-success); background: rgba(75,209,117,0.10); }
+
+/* ========== Tag ========== */
+.tag-demo { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; border-radius: 8px;
+  font-size: 12px; font-weight: 500; transition: all var(--transition-fast);
+}
+.tag-primary { background: rgba(30,124,255,0.10); color: var(--brand-500); }
+.tag-success { background: rgba(75,209,117,0.10); color: var(--color-success); }
+.tag-warning { background: rgba(255,153,17,0.10); color: var(--color-warning); }
+.tag-error { background: rgba(250,101,90,0.10); color: var(--color-error); }
+
+/* ========== Avatar ========== */
+.avatar-demo { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.avatar {
+  border-radius: 50%; background: var(--divider-weak); display: flex;
+  align-items: center; justify-content: center; color: var(--text-tertiary);
+  font-weight: 600; flex-shrink: 0; transition: all var(--transition-fast);
+}
+.avatar-border { border: 2px solid var(--bg-card); }
+.avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+.avatar-md { width: 40px; height: 40px; font-size: 14px; }
+.avatar-lg { width: 48px; height: 48px; font-size: 16px; }
+.avatar-xl { width: 64px; height: 64px; font-size: 20px; }
+
+/* ========== TabBar (simulated) ========== */
+.tabbar-demo {
+  background: rgba(255,255,255,0.88); backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 28px 28px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+  padding: 8px 16px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex; justify-content: space-around; align-items: center;
+  max-width: 430px; margin: 0 auto; gap: 4px;
+}
+.tabbar-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 16px; border-radius: 12px; cursor: pointer;
+  transition: all var(--transition-fast); font-size: 20px; min-width: 60px;
+}
+.tabbar-item svg { width: 24px; height: 24px; }
+.tabbar-item-label { font-size: 11px; font-weight: 500; }
+.tabbar-item.active { color: var(--brand-500); }
+.tabbar-item:not(.active) { color: var(--text-body); }
+.tabbar-indicator {
+  width: 32px; height: 6px; background: var(--brand-500);
+  border-radius: 3px; margin: 0 auto;
+}
+
+/* ========== Toast ========== */
+.toast-demo-btn { padding: 10px 20px; background: var(--bg-card); border: 1px solid var(--divider-strong); border-radius: var(--radius-full); cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-primary); transition: all var(--transition-fast); }
+.toast-demo-btn:hover { border-color: var(--brand-400); }
+.toast-notification {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.95); opacity: 0;
+  background: var(--mask-toast); color: #fff;
+  padding: 12px 24px; border-radius: var(--radius-pc-md);
+  font-size: 14px; z-index: 3000; max-width: 70vw; text-align: center;
+  transition: all 300ms var(--ease-base); pointer-events: none;
+}
+.toast-notification.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+/* ========== Dialog (simulated) ========== */
+.dialog-overlay {
+  position: fixed; inset: 0; background: var(--mask-modal);
+  z-index: 2000; display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease-base);
+}
+.dialog-overlay.show { opacity: 1; pointer-events: auto; }
+.dialog-box {
+  background: var(--bg-card); border-radius: var(--radius-lg);
+  padding: 32px 24px 24px; max-width: 320px; width: 90%;
+  transform: scale(0.95); transition: transform 200ms var(--ease-base);
+}
+.dialog-overlay.show .dialog-box { transform: scale(1); }
+.dialog-title { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+.dialog-body { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
+.dialog-actions { display: flex; gap: 12px; }
+.dialog-btn {
+  flex: 1; height: 48px; border-radius: var(--radius-full);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: all var(--transition-fast); border: none; font-family: var(--font-sans);
+}
+.dialog-btn-cancel { background: var(--bg-block); color: var(--text-primary); border: 1px solid #F2F4F5; }
+.dialog-btn-cancel:active { background: var(--bg-block); }
+.dialog-btn-confirm { background: var(--btn-blue-default); color: #fff; }
+.dialog-btn-confirm:active { background: var(--btn-blue-active); }
+
+/* ========== ActionSheet (simulated) ========== */
+.actionsheet-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 2000; display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 200ms var(--ease-base);
+}
+.actionsheet-overlay.show { opacity: 1; pointer-events: auto; }
+.actionsheet-box {
+  background: var(--bg-card); border-radius: 24px 24px 0 0;
+  max-width: 430px; width: 100%;
+  transform: translateY(100%); transition: transform 300ms var(--ease-base);
+}
+.actionsheet-overlay.show .actionsheet-box { transform: translateY(0); }
+.actionsheet-header { padding: 16px; font-size: 14px; color: var(--text-hint); text-align: center; border-bottom: 1px solid #F2F4F5; }
+.actionsheet-option {
+  padding: 16px 24px; font-size: 16px; color: var(--text-primary);
+  border-bottom: 1px solid #F2F4F5; cursor: pointer; transition: background var(--transition-fast);
+}
+.actionsheet-option:last-child { border-bottom: none; }
+.actionsheet-option:active { background: var(--bg-block); }
+.actionsheet-cancel { padding: 16px; font-size: 16px; font-weight: 600; color: var(--color-error); text-align: center; cursor: pointer; }
+
+/* ========== ListCell ========== */
+.listcell-demo { background: var(--bg-card); border-radius: var(--radius-pc-md); overflow: hidden; max-width: 500px; }
+.list-cell {
+  display: flex; align-items: center; min-height: 56px;
+  padding: 14px 24px; border-bottom: 1px solid var(--divider-weak);
+  cursor: pointer; transition: background var(--transition-fast);
+}
+.list-cell:last-child { border-bottom: none; }
+.list-cell:active { background: var(--bg-block); }
+.list-cell-icon { width: 24px; height: 24px; margin-right: 12px; flex-shrink: 0; color: var(--text-secondary); }
+.list-cell-title { flex: 1; font-size: 16px; font-weight: 500; color: var(--text-primary); }
+.list-cell-subtitle { font-size: 14px; color: var(--text-secondary); margin-right: 8px; }
+.list-cell-value { font-size: 14px; color: var(--text-secondary); margin-right: 8px; }
+.list-cell-arrow { width: 16px; height: 16px; color: var(--text-disabled); flex-shrink: 0; }
+
+/* ========== Switch ========== */
+.switch-demo { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+.switch-track {
+  position: relative; width: 51px; height: 31px;
+  border-radius: var(--radius-full); background: var(--divider-strong);
+  cursor: pointer; transition: background var(--transition-fast);
+}
+.switch-track.active { background: var(--brand-500); }
+.switch-thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 27px; height: 27px; border-radius: 50%;
+  background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: transform 200ms var(--ease-spring);
+}
+.switch-track.active .switch-thumb { transform: translateX(20px); }
+
+/* ========== NavBar (simulated) ========== */
+.navbar-demo {
+  background: var(--bg-card); border-bottom: 1px solid var(--divider-weak);
+  max-width: 430px; margin: 0 auto; position: relative;
+}
+.navbar-inner {
+  display: flex; align-items: center; height: 44px;
+  padding: 0 16px; padding-top: env(safe-area-inset-top, 0px);
+}
+.navbar-back { width: 24px; height: 24px; cursor: pointer; color: var(--text-primary); flex-shrink: 0; }
+.navbar-title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; color: var(--text-primary); }
+.navbar-action { min-width: 24px; display: flex; align-items: center; justify-content: flex-end; }
+
+/* ========== Icons Grid ========== */
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+.icon-cell {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px;
+  padding: 20px 12px; background: var(--bg-card);
+  border: 1px solid var(--divider-weak); border-radius: var(--radius-pc-md);
+  transition: all var(--transition-fast); cursor: pointer;
+}
+.icon-cell:hover { border-color: var(--brand-500); background: var(--brand-50); }
+.icon-cell svg { width: 24px; height: 24px; color: var(--text-secondary); transition: color var(--transition-fast); }
+.icon-cell:hover svg { color: var(--brand-500); }
+.icon-cell-name { font-size: 11px; color: var(--text-tertiary); text-align: center; }
+
+/* ========== Misc ========== */
+.divider { height: 1px; background: var(--divider-weak); margin: 0 64px; }
+.toast-global {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg-card); border: 1px solid var(--divider-strong);
+  border-radius: var(--radius-full); padding: 10px 24px;
+  font-size: 13px; color: var(--text-primary); z-index: 200;
+  opacity: 0; transition: all 300ms var(--ease-base);
+  pointer-events: none; box-shadow: var(--shadow-lg);
+}
+.toast-global.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ========== Responsive ========== */
+@media (max-width: 1024px) {
+  .section { padding: 60px 40px 80px; }
+  .hero { padding: 80px 40px 60px; }
+  .hero-title { font-size: 42px; }
+  .divider { margin: 0 40px; }
+}
+@media (max-width: 768px) {
+  .topbar { display: flex; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.show { display: block; }
+  .main { margin-left: 0; }
+  .hero { padding: 80px 20px 40px; }
+  .hero-title { font-size: 32px; }
+  .section { padding: 48px 20px 64px; }
+  .section-title { font-size: 28px; }
+  .divider { margin: 0 20px; }
+  .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .card-grid { grid-template-columns: 1fr; }
+  .component-demo { padding: 20px; }
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--divider-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+::selection { background: rgba(30,124,255,0.20); color: var(--text-primary); }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+            <line x1="12" y1="22" x2="12" y2="15.5"/>
+            <polyline points="22 8.5 12 15.5 2 8.5"/>
+          </svg>
+        </div>
+        <span class="brand-name">ZM-XL</span>
+      </div>
+      <div class="brand-tag">设计系统</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">快速开始</div>
+      <a class="nav-item active" href="#overview" data-section="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        概览
+      </a>
+
+      <!-- 设计基础 -->
+      <div class="nav-group-label">设计基础</div>
+      <a class="nav-item" href="#colors" data-section="colors">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/></svg>
+        颜色
+      </a>
+      <a class="nav-item" href="#typography" data-section="typography">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        字体
+      </a>
+      <a class="nav-item" href="#spacing" data-section="spacing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        间距
+      </a>
+      <a class="nav-item" href="#shadows" data-section="shadows">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        阴影
+      </a>
+
+      <!-- 组件 -->
+      <div class="nav-group-label">组件</div>
+      <a class="nav-item" href="#comp-button" data-section="comp-button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+        按钮
+      </a>
+      <a class="nav-item" href="#comp-input" data-section="comp-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M9 9h6M9 13h4"/></svg>
+        输入框
+      </a>
+      <a class="nav-item" href="#comp-card" data-section="comp-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        卡片
+      </a>
+      <a class="nav-item" href="#comp-tag" data-section="comp-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        标签
+      </a>
+      <a class="nav-item" href="#comp-avatar" data-section="comp-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        头像
+      </a>
+      <a class="nav-item" href="#comp-tabbar" data-section="comp-tabbar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="6"/><line x1="12" y1="10" x2="12" y2="4"/><line x1="18" y1="10" x2="18" y2="6"/></svg>
+        标签栏
+      </a>
+      <a class="nav-item" href="#comp-toast" data-section="comp-toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        提示
+      </a>
+      <a class="nav-item" href="#comp-dialog" data-section="comp-dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4M9 17h2"/></svg>
+        对话框
+      </a>
+      <a class="nav-item" href="#comp-actionsheet" data-section="comp-actionsheet">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="14" width="16" height="6" rx="2"/><line x1="8" y1="14" x2="8" y2="10"/><line x1="12" y1="14" x2="12" y2="8"/><line x1="16" y1="14" x2="16" y2="10"/></svg>
+        动作面板
+      </a>
+      <a class="nav-item" href="#comp-listcell" data-section="comp-listcell">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        列表
+      </a>
+      <a class="nav-item" href="#comp-switch" data-section="comp-switch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="14" rx="7"/><circle cx="8" cy="12" r="3"/></svg>
+        开关
+      </a>
+      <a class="nav-item" href="#comp-navbar" data-section="comp-navbar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        导航栏
+      </a>
+
+      <!-- 资源 -->
+      <div class="nav-group-label">资源</div>
+      <a class="nav-item" href="#icons" data-section="icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        图标
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">ZM-XL v2.0 · 精心打造</div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+    <div class="topbar" id="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span style="font-weight:700;font-size:15px;">ZM-XL</span>
+    </div>
+
+    <!-- ===== Overview ===== -->
+    <section class="hero" id="overview">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Design System v2.0
+      </div>
+      <h1 class="hero-title">ZM-XL<br>Design System</h1>
+      <p class="hero-subtitle">小鹿AI编程统一设计体系。基于 ZM-XL 基础体验规范，覆盖 Mobile / PC 双平台，提供一致的 Design Token 与组件库。</p>
+      <div class="hero-actions">
+        <a href="#comp-button" class="btn btn-primary">浏览组件 →</a>
+        <a href="#colors" class="btn btn-outline">查看色板</a>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Colors ===== -->
+    <section class="section" id="colors">
+      <div class="section-header">
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/></svg>
+          Foundations
+        </div>
+        <h2 class="section-title">Colors</h2>
+        <p class="section-desc">ZM-XL 完整调色板，包含品牌主色阶、语义功能色与扩展辅助色。</p>
+      </div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text-secondary);">Brand 品牌主色</h3>
+      <div class="color-grid" style="margin-bottom:32px;" id="colorBrand"></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text-secondary);">Semantic 功能色</h3>
+      <div class="color-grid" style="margin-bottom:32px;" id="colorSemantic"></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text-secondary);">Accent 扩展辅助色</h3>
+      <div class="color-grid" style="margin-bottom:32px;" id="colorAccent"></div>
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text-secondary);">Neutral 中性色</h3>
+      <div class="color-grid" id="colorNeutral"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Typography ===== -->
+    <section class="section" id="typography">
+      <div class="section-header">
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          Foundations
+        </div>
+        <h2 class="section-title">Typography</h2>
+        <p class="section-desc">ZM-XL 字体排版体系，覆盖 Mobile / PC 双平台字号层级。</p>
+      </div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--brand-500);">Mobile 端字阶</h3>
+      <div id="typeMobile" style="margin-bottom:40px;"></div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--brand-500);">PC 端字阶</h3>
+      <div id="typePC"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Spacing ===== -->
+    <section class="section" id="spacing">
+      <div class="section-header">
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Foundations
+        </div>
+        <h2 class="section-title">Spacing</h2>
+        <p class="section-desc">基于 8px 基准的间距系统（ZM-XL 规范），适用于 margin / padding / gap 等属性。</p>
+      </div>
+      <div class="spacing-grid" id="spacingList"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Shadows ===== -->
+    <section class="section" id="shadows">
+      <div class="section-header">
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          Foundations
+        </div>
+        <h2 class="section-title">Shadows</h2>
+        <p class="section-desc">ZM-XL 阴影体系，按层级从轻到重排列，覆盖卡片浮起、弹窗、按钮投影等场景。</p>
+      </div>
+      <div class="shadow-grid" id="shadowGrid"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ========== COMPONENTS ========== -->
+
+    <!-- ===== Button ===== -->
+    <section class="section" id="comp-button">
+      <div class="section-header">
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          Components
+        </div>
+        <h2 class="section-title">Button 按钮</h2>
+        <p class="section-desc">高度 48px（大）/ 40px（中）/ 32px（小），全圆角胶囊，支持蓝色实心、橙色实心、描边、幽灵四种变体。</p>
+      </div>
+
+      <div class="component-block">
+        <h3 class="component-block-title">实色按钮 Solid</h3>
+        <p class="component-desc">用于主操作（提交/确认），蓝色为品牌主色，橙色用于警示/强调操作。</p>
+        <div class="component-demo">
+          <button class="btn btn-primary">Primary 主按钮</button>
+          <button class="btn btn-orange">Orange 橙色</button>
+          <button class="btn btn-primary" style="opacity:0.4;cursor:not-allowed;">Disabled</button>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-value">"btn btn-primary"</span><span class="hl-tag">&gt;</span>Primary<span class="hl-tag">&lt;/button&gt;</span>
+<span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-value">"btn btn-orange"</span><span class="hl-tag">&gt;</span>Orange<span class="hl-tag">&lt;/button&gt;</span></code></pre>
+        </div>
+      </div>
+
+      <div class="component-block">
+        <h3 class="component-block-title">描边 & 幽灵按钮 Outline / Ghost</h3>
+        <p class="component-desc">描边按钮用于次要操作（取消/返回），幽灵按钮用于三级操作（详情/查看）。</p>
+        <div class="component-demo">
+          <button class="btn btn-outline">Outline 描边</button>
+          <button class="btn btn-ghost">Ghost 幽灵</button>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code><span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-value">"btn btn-outline"</span><span class="hl-tag">&gt;</span>Outline<span class="hl-tag">&lt;/button&gt;</span>
+<span class="hl-tag">&lt;button</span> <span class="hl-attr">class</span>=<span class="hl-value">"btn btn-ghost"</span><span class="hl-tag">&gt;</span>Ghost<span class="hl-tag">&lt;/button&gt;</span></code></pre>
+        </div>
+      </div>
+
+      <div class="component-block">
+        <h3 class="component-block-title">尺寸 Sizes</h3>
+        <div class="component-demo">
+          <button class="btn btn-primary" style="height:48px;font-size:16px;">Large (48px)</button>
+          <button class="btn btn-primary" style="height:40px;font-size:14px;padding:10px 24px;">Medium (40px)</button>
+          <button class="btn btn-primary btn-sm">Small (32px)</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Input ===== -->
+    <section class="section" id="comp-input">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/></svg>Components</div>
+        <h2 class="section-title">Input 输入框</h2>
+        <p class="section-desc">高度 48px，圆角 12px，支持默认、聚焦、错误、禁用四种状态。</p>
+      </div>
+      <div class="component-demo">
+        <div class="input-group">
+          <label class="input-label">Default 默认</label>
+          <input class="input-field" type="text" placeholder="请输入内容">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Focus 聚焦</label>
+          <input class="input-field" type="text" value="聚焦状态">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Error 错误</label>
+          <input class="input-field error" type="text" value="输入有误">
+          <span class="input-hint error">请输入有效内容</span>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Disabled 禁用</label>
+          <input class="input-field" type="text" value="不可编辑" disabled style="background:var(--bg-input-disabled);color:var(--text-disabled);">
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-tag">&lt;input</span> <span class="hl-attr">class</span>=<span class="hl-value">"input-field"</span>
+       <span class="hl-attr">type</span>=<span class="hl-value">"text"</span>
+       <span class="hl-attr">placeholder</span>=<span class="hl-value">"请输入内容"</span><span class="hl-tag">/&gt;</span></code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Card ===== -->
+    <section class="section" id="comp-card">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Components</div>
+        <h2 class="section-title">Card 卡片</h2>
+        <p class="section-desc">圆角 24px，支持 default / elevated（带阴影）/ bordered（带边框）三种变体。</p>
+      </div>
+      <div class="component-demo" style="background:var(--bg-page);">
+        <div class="card-grid">
+          <div class="demo-card">
+            <div class="demo-card-img" style="background:var(--gradient-primary);">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <div class="demo-card-body">
+              <div class="demo-card-title">课程卡片</div>
+              <div class="demo-card-desc">用于展示课程封面、标题与简介信息。</div>
+            </div>
+            <div class="demo-card-footer"><span class="demo-card-tag">H1 · 算法</span><span style="font-size:12px;color:var(--text-tertiary);">→</span></div>
+          </div>
+          <div class="demo-card" style="box-shadow:var(--shadow-md);">
+            <div class="demo-card-img orange">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="demo-card-body">
+              <div class="demo-card-title">完成成就</div>
+              <div class="demo-card-desc">任务完成状态的展示卡片，配合图标使用。</div>
+            </div>
+            <div class="demo-card-footer"><span class="demo-card-tag orange">Success</span><span style="font-size:12px;color:var(--text-tertiary);">→</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"demo-card"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"demo-card-img"</span><span class="hl-tag">&gt;&lt;/div&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"demo-card-body"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Tag ===== -->
+    <section class="section" id="comp-tag">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>Components</div>
+        <h2 class="section-title">Tag 标签</h2>
+        <p class="section-desc">圆角 8px，内边距 4px 12px，支持 Primary / Success / Warning / Error 四种语义变体。</p>
+      </div>
+      <div class="component-demo">
+        <div class="tag-demo">
+          <span class="tag tag-primary">Primary 品牌</span>
+          <span class="tag tag-success">Success 成功</span>
+          <span class="tag tag-warning">Warning 警告</span>
+          <span class="tag tag-error">Error 错误</span>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-value">"tag tag-primary"</span><span class="hl-tag">&gt;</span>Primary<span class="hl-tag">&lt;/span&gt;</span></code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Avatar ===== -->
+    <section class="section" id="comp-avatar">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Components</div>
+        <h2 class="section-title">Avatar 头像</h2>
+        <p class="section-desc">支持 32 / 40 / 48 / 64px 四种尺寸，圆形（50%）或方形（12px圆角），可选白色边框。</p>
+      </div>
+      <div class="component-demo">
+        <div class="avatar-demo">
+          <div class="avatar avatar-sm">L</div>
+          <div class="avatar avatar-md">小</div>
+          <div class="avatar avatar-lg" style="background:var(--brand-50);color:var(--brand-500);">中</div>
+          <div class="avatar avatar-xl" style="background:linear-gradient(135deg,var(--accent-purple),var(--accent-violet));color:#fff;">大</div>
+          <div class="avatar avatar-lg avatar-border" style="background:var(--brand-50);color:var(--brand-500);">框</div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"avatar avatar-lg"</span><span class="hl-tag">&gt;</span>中<span class="hl-tag">&lt;/div&gt;</span></code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== TabBar ===== -->
+    <section class="section" id="comp-tabbar">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="6"/><line x1="12" y1="10" x2="12" y2="4"/><line x1="18" y1="10" x2="18" y2="6"/></svg>Components</div>
+        <h2 class="section-title">TabBar 底部导航</h2>
+        <p class="section-desc">高度 88px（含 safe area），支持常规平分和滑动两种样式。推荐使用悬浮药丸胶囊风格。</p>
+      </div>
+      <div class="component-demo" style="background:var(--bg-block);min-height:160px;flex-direction:column;justify-content:flex-end;">
+        <p style="font-size:12px;color:var(--text-tertiary);margin-bottom:12px;width:100%;">模拟展示（实际为移动端底部固定）：</p>
+        <div class="tabbar-demo" id="tabbarDemo">
+          <div class="tabbar-item active" onclick="switchTab(this,0)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="tabbar-item-label">首页</span>
+          </div>
+          <div class="tabbar-item" onclick="switchTab(this,1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+            <span class="tabbar-item-label">课程</span>
+          </div>
+          <div class="tabbar-item" onclick="switchTab(this,2)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06A1.65 1.65 0 0014.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 1.65 1.65 0 00-1.51 1H15a1.65 1.65 0 001.51 1z"/></svg>
+            <span class="tabbar-item-label">设置</span>
+          </div>
+          <div class="tabbar-item" onclick="switchTab(this,3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="tabbar-item-label">我的</span>
+          </div>
+        </div>
+        <div id="tabbarIndicator" style="margin:0 auto;width:32px;height:6px;background:var(--brand-500);border-radius:3px;margin-top:8px;transition:all 200ms ease;display:none;"></div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>CSS (核心)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-selector">.tabbar</span> {
+  <span class="hl-property">position</span>: <span class="hl-value">fixed</span>;
+  <span class="hl-property">bottom</span>: <span class="hl-value">0</span>;
+  <span class="hl-property">background</span>: <span class="hl-value">rgba(255,255,255,0.85)</span>;
+  <span class="hl-property">backdrop-filter</span>: <span class="hl-value">blur(20px)</span>;
+  <span class="hl-property">border-radius</span>: <span class="hl-value">28px 28px 0 0</span>;
+}</code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Toast ===== -->
+    <section class="section" id="comp-toast">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Components</div>
+        <h2 class="section-title">Toast 提示</h2>
+        <p class="section-desc">遮罩 72% 透明度，圆角 12px，字号 14px，居中显示，2秒自动关闭。胶囊毛玻璃风格。</p>
+      </div>
+      <div class="component-demo">
+        <button class="toast-demo-btn" onclick="showDemoToast('操作成功！')">触发 Toast</button>
+        <button class="toast-demo-btn" onclick="showDemoToast('警告：内容有误')" style="border-color:var(--color-warning);color:var(--color-warning);">触发警告</button>
+        <button class="toast-demo-btn" onclick="showDemoToast('错误：网络异常')" style="border-color:var(--color-error);color:var(--color-error);">触发错误</button>
+      </div>
+      <div class="toast-notification" id="demoToast"></div>
+      <div class="code-block">
+        <div class="code-block-header"><span>CSS (核心)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-selector">.toast</span> {
+  <span class="hl-property">background</span>: <span class="hl-value">rgba(0,0,0,0.72)</span>;
+  <span class="hl-property">color</span>: <span class="hl-value">#FFFFFF</span>;
+  <span class="hl-property">border-radius</span>: <span class="hl-value">12px</span>;
+  <span class="hl-property">padding</span>: <span class="hl-value">12px 24px</span>;
+}</code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Dialog ===== -->
+    <section class="section" id="comp-dialog">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4M9 17h2"/></svg>Components</div>
+        <h2 class="section-title">Dialog 确认弹窗</h2>
+        <p class="section-desc">蒙层 56% 透明度，弹窗圆角 24px，入场动画 scale(0.9)→scale(1)，按钮全圆角胶囊。</p>
+      </div>
+      <div class="component-demo">
+        <button class="btn btn-primary" onclick="document.getElementById('demoDialog').classList.add('show')">打开 Dialog</button>
+      </div>
+      <div class="dialog-overlay" id="demoDialog" onclick="if(event.target===this)this.classList.remove('show')">
+        <div class="dialog-box">
+          <div class="dialog-title">确认提交？</div>
+          <div class="dialog-body">提交后将无法修改，请确认信息填写正确。</div>
+          <div class="dialog-actions">
+            <button class="dialog-btn dialog-btn-cancel" onclick="document.getElementById('demoDialog').classList.remove('show')">取消</button>
+            <button class="dialog-btn dialog-btn-confirm" onclick="document.getElementById('demoDialog').classList.remove('show')">确认</button>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"dialog-overlay"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"dialog-box"</span><span class="hl-tag">&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"dialog-title"</span><span class="hl-tag">&gt;</span>确认？<span class="hl-tag">&lt;/div&gt;</span>
+    <span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"dialog-actions"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/div&gt;</span>
+  <span class="hl-tag">&lt;/div&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== ActionSheet ===== -->
+    <section class="section" id="comp-actionsheet">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="14" width="16" height="6" rx="2"/><line x1="8" y1="14" x2="8" y2="10"/><line x1="12" y1="14" x2="12" y2="8"/><line x1="16" y1="14" x2="16" y2="10"/></svg>Components</div>
+        <h2 class="section-title">ActionSheet 底部选择器</h2>
+        <p class="section-desc">蒙层 40% 透明度，选择器圆角 24px 24px 0 0，从底部滑入，支持点击蒙层关闭。</p>
+      </div>
+      <div class="component-demo">
+        <button class="btn btn-outline" onclick="document.getElementById('demoActionSheet').classList.add('show')">打开 ActionSheet</button>
+      </div>
+      <div class="actionsheet-overlay" id="demoActionSheet" onclick="if(event.target===this)this.classList.remove('show')">
+        <div class="actionsheet-box">
+          <div class="actionsheet-header">选择操作</div>
+          <div class="actionsheet-option" onclick="document.getElementById('demoActionSheet').classList.remove('show')">编辑课程信息</div>
+          <div class="actionsheet-option" onclick="document.getElementById('demoActionSheet').classList.remove('show')">分享给好友</div>
+          <div class="actionsheet-option" onclick="document.getElementById('demoActionSheet').classList.remove('show')">查看详情</div>
+          <div class="actionsheet-cancel" onclick="document.getElementById('demoActionSheet').classList.remove('show')">取消</div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>CSS (核心)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-selector">.actionsheet-box</span> {
+  <span class="hl-property">border-radius</span>: <span class="hl-value">24px 24px 0 0</span>;
+  <span class="hl-property">transform</span>: <span class="hl-value">translateY(100%)</span>;
+  <span class="hl-property">transition</span>: <span class="hl-value">transform 0.3s ease</span>;
+}</code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== ListCell ===== -->
+    <section class="section" id="comp-listcell">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>Components</div>
+        <h2 class="section-title">ListCell 列表项</h2>
+        <p class="section-desc">最小高度 56px，底部分割线 #EDEEF0，支持左图标 + 标题 + 右箭头等变体。</p>
+      </div>
+      <div class="component-demo" style="padding:0;overflow:hidden;">
+        <div class="listcell-demo">
+          <div class="list-cell">
+            <svg class="list-cell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="list-cell-title">个人资料</span>
+            <svg class="list-cell-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="list-cell">
+            <svg class="list-cell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span class="list-cell-title">消息通知</span>
+            <span class="list-cell-value">3 条新消息</span>
+            <svg class="list-cell-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="list-cell">
+            <svg class="list-cell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06"/></svg>
+            <span class="list-cell-title">设置</span>
+            <svg class="list-cell-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>HTML</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-tag">&lt;div</span> <span class="hl-attr">class</span>=<span class="hl-value">"list-cell"</span><span class="hl-tag">&gt;</span>
+  <span class="hl-tag">&lt;span</span> <span class="hl-attr">class</span>=<span class="hl-value">"list-cell-title"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/span&gt;</span>
+  <span class="hl-tag">&lt;svg</span> <span class="hl-attr">class</span>=<span class="hl-value">"list-cell-arrow"</span><span class="hl-tag">&gt;</span>...<span class="hl-tag">&lt;/svg&gt;</span>
+<span class="hl-tag">&lt;/div&gt;</span></code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Switch ===== -->
+    <section class="section" id="comp-switch">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="14" rx="7"/><circle cx="8" cy="12" r="3"/></svg>Components</div>
+        <h2 class="section-title">Switch 开关</h2>
+        <p class="section-desc">宽度 51px，高度 31px，滑块 27px，开启态品牌蓝色 #1E7CFF，关闭态 #E5E6EB，滑块带弹性动效。</p>
+      </div>
+      <div class="component-demo">
+        <div class="switch-demo">
+          <div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">开启</p>
+            <div class="switch-track active" onclick="this.classList.toggle('active')">
+              <div class="switch-thumb"></div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">关闭</p>
+            <div class="switch-track" onclick="this.classList.toggle('active')">
+              <div class="switch-thumb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>CSS (核心)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-selector">.switch-track.active</span> { <span class="hl-property">background</span>: <span class="hl-value">#1E7CFF</span>; }
+<span class="hl-selector">.switch-thumb</span> {
+  <span class="hl-property">transition</span>: <span class="hl-value">transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)</span>;
+}
+<span class="hl-selector">.switch-track.active .switch-thumb</span> {
+  <span class="hl-property">transform</span>: <span class="hl-value">translateX(20px)</span>;
+}</code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== NavBar ===== -->
+    <section class="section" id="comp-navbar">
+      <div class="section-header">
+        <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>Components</div>
+        <h2 class="section-title">NavBar 导航栏</h2>
+        <p class="section-desc">高度 44px + 状态栏，标题字号 17px 字重 600，支持左侧返回箭头、中间标题、右侧操作区。</p>
+      </div>
+      <div class="component-demo" style="padding:0;overflow:hidden;">
+        <div class="navbar-demo">
+          <div class="navbar-inner">
+            <svg class="navbar-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            <span class="navbar-title">课程详情</span>
+            <div class="navbar-action">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-block-header"><span>CSS (核心)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code><span class="hl-selector">.navbar</span> {
+  <span class="hl-property">height</span>: <span class="hl-value">44px</span>;
+  <span class="hl-property">padding-top</span>: <span class="hl-value">env(safe-area-inset-top)</span>;
+  <span class="hl-property">position</span>: <span class="hl-value">sticky</span>;
+  <span class="hl-property">top</span>: <span class="hl-value">0</span>;
+}</code></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===== Icons ===== -->
+    <section class="section" id="icons">
+      <div class="section-header">
+        <div class="section-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Assets
+        </div>
+        <h2 class="section-title">Icons</h2>
+        <p class="section-desc">ZM-XL 常用内联 SVG 图标集，基于 24×24 viewBox，支持直接复制使用。推荐 Ant Design Icons（Filled 面性）风格。</p>
+      </div>
+      <div class="icon-grid" id="iconGrid"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Global Toast -->
+<div class="toast-global" id="toastGlobal"></div>
+
+<script>
+/* ========== ZM-XL Design Data ========== */
+const brandColors = [
+  { name: 'brand-50',  value: '#E6F2FF' },
+  { name: 'brand-100', value: '#CCE5FF' },
+  { name: 'brand-200', value: '#99CBFF' },
+  { name: 'brand-300', value: '#66B0FF' },
+  { name: 'brand-400', value: '#3396FF' },
+  { name: 'brand-500', value: '#1E7CFF', isMain: true },
+  { name: 'brand-600', value: '#1963CC' },
+  { name: 'brand-700', value: '#134A99' },
+  { name: 'brand-800', value: '#0C3266' },
+  { name: 'brand-900', value: '#061933' },
+];
+
+const semanticColors = [
+  { name: 'Success 成功', value: '#4BD175' },
+  { name: 'Warning 警告', value: '#FF9911' },
+  { name: 'Error 错误',   value: '#FA655A' },
+  { name: 'Info 信息',    value: '#1E7CFF' },
+];
+
+const accentColors = [
+  { name: 'Purple 紫',   value: '#6B6DFF' },
+  { name: 'Blue 浅蓝',    value: '#04B4FF' },
+  { name: 'Violet 紫罗兰', value: '#9C70F8' },
+  { name: 'Yellow 黄',   value: '#FFD400' },
+  { name: 'Pink 粉',     value: '#FF6680' },
+  { name: 'Cyan 青',     value: '#2ECAAA' },
+];
+
+const neutralColors = [
+  { name: 'Bg Page',       value: '#F5F7FA', label: '页面背景' },
+  { name: 'Bg Light',      value: '#F5F9FF', label: '蓝色调背景' },
+  { name: 'Bg Card',       value: '#FFFFFF', label: '卡片背景' },
+  { name: 'Bg Block',      value: '#F7F9FA', label: '块级背景' },
+  { name: 'Divider Strong', value: '#E1E3E6', label: '分割线-重' },
+  { name: 'Divider Weak',   value: '#EDEEF0', label: '分割线-弱' },
+  { name: 'Text Tertiary',  value: '#9DA3A3', label: '辅助文字' },
+  { name: 'Text Secondary', value: '#5D697A', label: '次级文字' },
+  { name: 'Text Primary',   value: '#141414', label: '正文文字' },
+];
+
+const shadows = [
+  { name: 'shadow-sm',  value: '0 1px 2px rgba(0,0,0,0.05)',  desc: '微阴影\n列表项、标签' },
+  { name: 'shadow-md',  value: '0 2px 12px rgba(0,0,0,0.06)', desc: '卡片浮起\n弹窗' },
+  { name: 'shadow-lg',  value: '0 4px 16px rgba(0,0,0,0.08)', desc: 'TabBar\n底部浮层' },
+  { name: 'shadow-xl',  value: '0 8px 32px rgba(0,0,0,0.12)', desc: '大弹窗\n全屏模态' },
+  { name: 'shadow-card', value: '0 2px 8px rgba(0,0,0,0.04)',  desc: '内嵌卡片\n极轻阴影' },
+  { name: 'shadow-btn',  value: '0 2px 4px rgba(30,124,255,0.2)', desc: '主按钮\n品牌色投影' },
+];
+
+const typeMobile = [
+  { tag: 'Page Title', size: 40, lh: 54, weight: 700, scene: '页面标题' },
+  { tag: 'Module Title', size: 36, lh: 50, weight: 700, scene: '模块标题' },
+  { tag: 'Title',       size: 32, lh: 44, weight: 700, scene: '主标题' },
+  { tag: 'Subtitle',    size: 28, lh: 38, weight: 600, scene: '副标题' },
+  { tag: 'Body',        size: 24, lh: 32, weight: 500, scene: '辅助信息' },
+  { tag: 'Caption',     size: 20, lh: 26, weight: 500, scene: '标签内容' },
+];
+
+const typePC = [
+  { tag: 'Page Title PC', size: 20, lh: 26, weight: 700, scene: '页面标题' },
+  { tag: 'Module Title PC', size: 18, lh: 24, weight: 700, scene: '模块标题' },
+  { tag: 'Title PC',     size: 16, lh: 22, weight: 700, scene: '主标题' },
+  { tag: 'Subtitle PC',  size: 14, lh: 18, weight: 600, scene: '副标题' },
+  { tag: 'Body PC',      size: 12, lh: 16, weight: 500, scene: '辅助信息' },
+  { tag: 'Caption PC',   size: 10, lh: 14, weight: 500, scene: '标签内容' },
+];
+
+const spacingItems = [8, 16, 24, 32, 40, 48, 56, 64];
+
+const icons = [
+  { name: 'Arrow Right', svg: '<polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' },
+  { name: 'Arrow Left',  svg: '<polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' },
+  { name: 'Search',      svg: '<circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { name: 'Settings',    svg: '<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06A1.65 1.65 0 0014.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 1.65 1.65 0 00-1.51 1H15a1.65 1.65 0 001.51 1z" fill="none" stroke="currentColor" stroke-width="2"/>' },
+  { name: 'User',        svg: '<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/>' },
+  { name: 'Bell',        svg: '<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { name: 'Check',       svg: '<polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' },
+  { name: 'Close',       svg: '<line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' },
+  { name: 'Home',        svg: '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>' },
+  { name: 'Heart',       svg: '<path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>' },
+  { name: 'Star',        svg: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>' },
+  { name: 'Edit',        svg: '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' },
+];
+
+/* ========== Render ========== */
+function renderColorGroup(arr, containerId) {
+  const container = document.getElementById(containerId);
+  arr.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'color-swatch';
+    const isDark = isColorDark(c.value);
+    el.innerHTML = `
+      <div class="color-swatch-preview" style="background:${c.value};"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name" style="color:${isDark ? '#FAFAFA' : '#141414'}">${c.name}</div>
+        <div class="color-swatch-value">${c.value}${c.label ? ' · ' + c.label : ''}</div>
+      </div>`;
+    el.onclick = () => copyToClipboard(c.value);
+    container.appendChild(el);
+  });
+}
+
+function renderShadows() {
+  const container = document.getElementById('shadowGrid');
+  shadows.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'shadow-demo';
+    el.innerHTML = `
+      <div class="shadow-box" style="box-shadow:${s.value};"></div>
+      <div class="shadow-demo-name">${s.name}</div>
+      <div class="shadow-demo-value">${s.value.replace(/\n/g,' ')}<br>${s.desc.replace(/\n/g,'<br>')}</div>`;
+    container.appendChild(el);
+  });
+}
+
+function renderType(containerId, items) {
+  const container = document.getElementById(containerId);
+  items.forEach(t => {
+    const block = document.createElement('div');
+    block.className = 'type-preview';
+    block.innerHTML = `
+      <div style="font-size:${t.size}px;font-weight:${t.weight};line-height:${t.lh}px;color:var(--text-primary);">${t.tag} · ${t.scene}</div>
+      <div class="type-meta">
+        <span class="type-meta-item">${t.tag}</span>
+        <span class="type-meta-item">${t.size}px / ${t.lh}px</span>
+        <span class="type-meta-item">weight ${t.weight}</span>
+      </div>`;
+    container.appendChild(block);
+  });
+}
+
+function renderSpacing() {
+  const container = document.getElementById('spacingList');
+  spacingItems.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'spacing-item';
+    item.innerHTML = `
+      <div class="spacing-visual" style="width:${s}px;height:${s}px;"></div>
+      <div class="spacing-info">
+        <span class="spacing-label">${s}px</span>
+        <span class="spacing-value">${s / 8} × 8px 基准</span>
+      </div>`;
+    container.appendChild(item);
+  });
+}
+
+function renderIcons() {
+  const container = document.getElementById('iconGrid');
+  icons.forEach(icon => {
+    const cell = document.createElement('div');
+    cell.className = 'icon-cell';
+    cell.innerHTML = `<svg viewBox="0 0 24 24">${icon.svg}</svg><span class="icon-cell-name">${icon.name}</span>`;
+    cell.onclick = () => copyToClipboard(`<svg viewBox="0 0 24 24">${icon.svg}</svg>`);
+    container.appendChild(cell);
+  });
+}
+
+/* ========== Helpers ========== */
+function isColorDark(hex) {
+  const c = hex.replace('#','');
+  const r = parseInt(c.length===3 ? c[0]+c[0] : c.substring(0,2), 16);
+  const g = parseInt(c.length===3 ? c[1]+c[1] : c.substring(2,4), 16);
+  const b = parseInt(c.length===3 ? c[2]+c[2] : c.substring(4,6), 16);
+  return (r*0.299 + g*0.587 + b*0.114) < 140;
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => showGlobalToast('已复制: ' + text.substring(0,40)));
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => showGlobalToast('代码已复制'));
+}
+
+function showGlobalToast(msg) {
+  const toast = document.getElementById('toastGlobal');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+function showDemoToast(msg) {
+  const toast = document.getElementById('demoToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+function switchTab(el, idx) {
+  document.querySelectorAll('#tabbarDemo .tabbar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function updateActiveNav() {
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+  let current = '';
+  sections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 200) current = sec.id;
+  });
+  navItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.section === current);
+  });
+}
+
+function setupMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+  });
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
+    });
+  });
+}
+
+/* ========== Init ========== */
+document.addEventListener('DOMContentLoaded', () => {
+  renderColorGroup(brandColors,  'colorBrand');
+  renderColorGroup(semanticColors, 'colorSemantic');
+  renderColorGroup(accentColors,  'colorAccent');
+  renderColorGroup(neutralColors, 'colorNeutral');
+  renderShadows();
+  renderType('typeMobile', typeMobile);
+  renderType('typePC',      typePC);
+  renderSpacing();
+  renderIcons();
+  setupMobileSidebar();
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+});
+</script>
+</body>
+</html>
