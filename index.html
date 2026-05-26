@@ -68,8 +68,8 @@
   --input-bg: #FFFFFF;
 
   --btn-blue-default: #1E7CFF;
-  --btn-blue-hover: #4795FF;
-  --btn-blue-active: #1B6EE0;
+  --btn-blue-hover: #3396FF;
+  --btn-blue-active: #1963CC;
   --btn-blue-disabled: #A5CBFF;
 
   --btn-orange-default: #FF9911;
@@ -244,10 +244,13 @@ body {
 }
 .btn-primary { background: var(--btn-blue-default); color: #fff; }
 .btn-primary:hover { background: var(--btn-blue-hover); transform: translateY(-1px); box-shadow: var(--shadow-button); }
+.btn-primary:active { background: var(--btn-blue-active); transform: translateY(0); }
 .btn-orange { background: var(--btn-orange-default); color: #fff; border-radius: var(--radius-full); }
 .btn-orange:hover { background: var(--btn-orange-hover); }
 .btn-outline { background: transparent; color: var(--brand-500); border: 1.5px solid var(--brand-500); border-radius: var(--radius-full); padding: 13px 27px; }
 .btn-outline:hover { background: rgba(30,124,255,0.08); }
+.btn-outline:active { background: rgba(30,124,255,0.15); border-color: var(--brand-600); color: var(--brand-600); }
+.btn-outline:disabled { background: transparent; border-color: var(--btn-blue-disabled); color: var(--btn-blue-disabled); cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--text-secondary); padding: 14px 20px; }
 .btn-ghost:hover { color: var(--brand-500); background: var(--brand-50); }
 .btn-sm { padding: 8px 18px; font-size: 13px; }
