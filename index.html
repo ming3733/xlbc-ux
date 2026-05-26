@@ -145,18 +145,19 @@ body {
 
 .sidebar-brand { padding: 24px 20px 20px; border-bottom: 1px solid var(--divider-weak); }
 
-.brand-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
 
 .brand-icon {
-  width: 36px; height: 36px;
+  width: 32px; height: 32px;
   background: var(--gradient-primary);
   border-radius: var(--radius-pc-sm);
   display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
-.brand-icon svg { width: 20px; height: 20px; }
+.brand-icon svg { width: 18px; height: 18px; }
 
-.brand-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
-.brand-tag { font-size: 11px; color: var(--text-tertiary); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding-left: 48px; }
+.brand-name { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); line-height: 1; }
+.brand-sub { font-size: 12px; color: var(--brand-500); font-weight: 600; letter-spacing: 0.02em; padding-left: 42px; margin-top: 2px; }
 
 .sidebar-nav { flex: 1; padding: 12px 12px 24px; overflow-y: auto; }
 
@@ -604,7 +605,7 @@ body {
         </div>
         <span class="brand-name">ZM-XL</span>
       </div>
-      <div class="brand-tag">设计系统</div>
+      <div class="brand-sub">小鹿AI编程</div>
     </div>
 
     <nav class="sidebar-nav">
