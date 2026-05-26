@@ -448,8 +448,8 @@ body {
   transform: scale(0.9); opacity: 0; transition: transform 200ms var(--ease-base), opacity 200ms var(--ease-base);
 }
 .dialog-overlay.show .dialog-box { transform: scale(1); opacity: 1; }
-.dialog-title { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
-.dialog-body { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
+.dialog-title { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; text-align: center; }
+.dialog-body { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 24px; text-align: center; }
 .dialog-actions { display: flex; gap: 12px; }
 .dialog-btn {
   flex: 1; height: 48px; border-radius: var(--radius-full);
@@ -478,6 +478,7 @@ body {
 .actionsheet-option {
   padding: 16px 24px; font-size: 16px; color: var(--text-primary);
   border-bottom: 1px solid #F2F4F5; cursor: pointer; transition: background var(--transition-fast);
+  text-align: center;
 }
 .actionsheet-option:last-child { border-bottom: none; }
 .actionsheet-option:active { background: var(--bg-block); }
@@ -1039,7 +1040,7 @@ body {
       <div class="section-header">
         <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4M9 17h2"/></svg>Components</div>
         <h2 class="section-title">Dialog 确认弹窗</h2>
-        <p class="section-desc">蒙层 60% 透明度，弹窗圆角 24px，入场动画 scale(0.9)→scale(1) + opacity，按钮全圆角胶囊，点击蒙层不可关闭。</p>
+        <p class="section-desc">蒙层 60% 透明度，弹窗圆角 24px，入场动画 scale(0.9)→scale(1) + opacity，文案居中显示，按钮全圆角胶囊，点击蒙层不可关闭。</p>
       </div>
       <div class="component-demo">
         <button class="btn btn-primary" onclick="document.getElementById('demoDialog').classList.add('show')">打开 Dialog</button>
