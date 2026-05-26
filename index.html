@@ -11,7 +11,7 @@
 :root {
   /* ---- ZM-XL Design Tokens ---- */
   --text-primary: #141414;
-  --text-secondary: #5D697A;
+  --text-secondary: #626466;
   --text-tertiary: #9DA3A3;
   --text-disabled: #C4C8CC;
   --text-link: #4879A3;
@@ -34,7 +34,7 @@
   --divider-weak: #EDEEF0;
 
   --mask-toast: rgba(0,0,0,0.72);
-  --mask-modal: rgba(0,0,0,0.56);
+  --mask-modal: rgba(0,0,0,0.6);
   --mask-image: rgba(0,0,0,0.48);
 
   --brand: #1E7CFF;
@@ -445,9 +445,9 @@ body {
 .dialog-box {
   background: var(--bg-card); border-radius: var(--radius-lg);
   padding: 32px 24px 24px; max-width: 320px; width: 90%;
-  transform: scale(0.95); transition: transform 200ms var(--ease-base);
+  transform: scale(0.9); opacity: 0; transition: transform 200ms var(--ease-base), opacity 200ms var(--ease-base);
 }
-.dialog-overlay.show .dialog-box { transform: scale(1); }
+.dialog-overlay.show .dialog-box { transform: scale(1); opacity: 1; }
 .dialog-title { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
 .dialog-body { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px; }
 .dialog-actions { display: flex; gap: 12px; }
@@ -481,7 +481,6 @@ body {
 }
 .actionsheet-option:last-child { border-bottom: none; }
 .actionsheet-option:active { background: var(--bg-block); }
-.actionsheet-cancel { padding: 16px; font-size: 16px; font-weight: 600; color: var(--color-error); text-align: center; cursor: pointer; }
 
 /* ========== ListCell ========== */
 .listcell-demo { background: var(--bg-card); border-radius: var(--radius-pc-md); overflow: hidden; max-width: 500px; }
@@ -1040,12 +1039,12 @@ body {
       <div class="section-header">
         <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4M9 17h2"/></svg>Components</div>
         <h2 class="section-title">Dialog 确认弹窗</h2>
-        <p class="section-desc">蒙层 56% 透明度，弹窗圆角 24px，入场动画 scale(0.9)→scale(1)，按钮全圆角胶囊。</p>
+        <p class="section-desc">蒙层 60% 透明度，弹窗圆角 24px，入场动画 scale(0.9)→scale(1) + opacity，按钮全圆角胶囊，点击蒙层不可关闭。</p>
       </div>
       <div class="component-demo">
         <button class="btn btn-primary" onclick="document.getElementById('demoDialog').classList.add('show')">打开 Dialog</button>
       </div>
-      <div class="dialog-overlay" id="demoDialog" onclick="if(event.target===this)this.classList.remove('show')">
+      <div class="dialog-overlay" id="demoDialog">
         <div class="dialog-box">
           <div class="dialog-title">确认提交？</div>
           <div class="dialog-body">提交后将无法修改，请确认信息填写正确。</div>
@@ -1073,18 +1072,17 @@ body {
       <div class="section-header">
         <div class="section-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="14" width="16" height="6" rx="2"/><line x1="8" y1="14" x2="8" y2="10"/><line x1="12" y1="14" x2="12" y2="8"/><line x1="16" y1="14" x2="16" y2="10"/></svg>Components</div>
         <h2 class="section-title">ActionSheet 底部选择器</h2>
-        <p class="section-desc">蒙层 40% 透明度，选择器圆角 24px 24px 0 0，从底部滑入，支持点击蒙层关闭。</p>
+        <p class="section-desc">蒙层 40% 透明度，选择器圆角 24px 24px 0 0，从底部滑入，点击蒙层可关闭。</p>
       </div>
       <div class="component-demo">
         <button class="btn btn-outline" onclick="document.getElementById('demoActionSheet').classList.add('show')">打开 ActionSheet</button>
       </div>
       <div class="actionsheet-overlay" id="demoActionSheet" onclick="if(event.target===this)this.classList.remove('show')">
         <div class="actionsheet-box">
-          <div class="actionsheet-header">选择操作</div>
+          <div class="actionsheet-header" style="color:#626466;">选择操作</div>
           <div class="actionsheet-option" onclick="document.getElementById('demoActionSheet').classList.remove('show')">编辑课程信息</div>
           <div class="actionsheet-option" onclick="document.getElementById('demoActionSheet').classList.remove('show')">分享给好友</div>
-          <div class="actionsheet-option" onclick="document.getElementById('demoActionSheet').classList.remove('show')">查看详情</div>
-          <div class="actionsheet-cancel" onclick="document.getElementById('demoActionSheet').classList.remove('show')">取消</div>
+          <div class="actionsheet-option" style="margin-bottom:24px;" onclick="document.getElementById('demoActionSheet').classList.remove('show')">查看详情</div>
         </div>
       </div>
       <div class="code-block">
