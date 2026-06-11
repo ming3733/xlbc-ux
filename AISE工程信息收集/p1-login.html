@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AISE工程信息收集 - 登录</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+/* ===== 设计规范 Token ===== */
+:root {
+  --color-brand: #1E7CFF;
+  --color-brand-hover: #4795FF;
+  --color-brand-active: #1B6EE0;
+  --color-brand-disabled: #A5CBFF;
+  --color-error: #FA655A;
+  --color-warning: #FF9911;
+  --color-success: #4BD175;
+  --color-text-primary: #141414;
+  --color-text-secondary: #626466;
+  --color-text-tertiary: #9DA0A3;
+  --color-text-disabled: #C4C8CC;
+  --color-text-inverse: #FFFFFF;
+  --color-bg-page: #F7F9FA;
+  --color-bg-card: #FFFFFF;
+  --color-divider: #F2F4F5;
+  --font-page-title: 20px;
+  --font-title: 16px;
+  --font-subtitle: 14px;
+  --font-body: 14px;
+  --font-caption: 12px;
+  --font-weight-normal: 500;
+  --font-weight-bold: 600;
+  --radius-card: 24px;
+  --radius-input: 52px;
+  --radius-sm: 8px;
+  --page-padding: 16px;
+  --card-padding: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { font-size:16px; }
+body {
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background:var(--color-bg-page); color:var(--color-text-primary); -webkit-font-smoothing:antialiased;
+}
+#app {
+  width:100%; max-width:430px; margin:0 auto; background:var(--color-bg-page);
+  min-height:100vh; position:relative; overflow-x:hidden;
+}
+
+/* ===== 状态栏 ===== */
+.status-bar {
+  height:44px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--page-padding); font-size:15px; font-weight:var(--font-weight-bold);
+  background:#FFFFFF; color:var(--color-text-primary);
+  position:sticky; top:0; z-index:100;
+}
+.status-bar .time { letter-spacing:0.5px; }
+.status-bar .right { display:flex; align-items:center; gap:4px; }
+
+/* ===== 导航栏 ===== */
+.nav-bar {
+  height:44px; display:grid; grid-template-columns:40px 1fr 40px;
+  align-items:center; justify-items:center;
+  padding:0 var(--page-padding); background:#FFFFFF;
+  position:sticky; top:44px; z-index:99;
+  border-bottom:1px solid var(--color-divider);
+}
+.nav-bar .back {
+  width:36px; height:36px; display:flex; align-items:center; justify-content:flex-start;
+  background:none; border:none; font-size:28px; color:var(--color-text-primary);
+  cursor:pointer; padding-bottom:4px; justify-self:start;
+}
+.nav-bar .title { font-size:var(--font-page-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); text-align:center; }
+.nav-bar .right-placeholder { width:36px; justify-self:end; }
+
+/* ===== 页面内容 ===== */
+.page-content { padding:16px var(--page-padding) 100px; }
+.content-card {
+  background:var(--color-bg-card); border-radius:var(--radius-card);
+  padding:var(--card-padding); padding-bottom:40px;
+}
+
+/* ===== 表单 ===== */
+.form-group { margin-bottom:24px; }
+.form-group:first-of-type { margin-top:8px; }
+.form-label { display:block; font-size:var(--font-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:12px; }
+.form-input {
+  width:100%; height:52px; border:1px solid var(--color-divider); border-radius:var(--radius-input);
+  padding:0 24px; font-size:var(--font-title); color:var(--color-text-primary); background:var(--color-bg-card);
+  outline:none; transition:border-color .2s; -webkit-appearance:none;
+}
+.form-input::placeholder { color:var(--color-text-disabled); }
+.form-input:focus { border-color:var(--color-brand); }
+.form-input.error { border-color:var(--color-error); }
+.code-row { display:flex; gap:12px; align-items:center; }
+.code-row .form-input { flex:1; }
+.btn-code {
+  height:52px; padding:0 20px; border:1px solid var(--color-brand); border-radius:var(--radius-input);
+  background:var(--color-bg-card); color:var(--color-brand); font-size:var(--font-subtitle); font-weight:var(--font-weight-normal);
+  cursor:pointer; white-space:nowrap; transition:all .2s; flex-shrink:0;
+}
+.btn-code:disabled { border-color:var(--color-divider); color:var(--color-text-disabled); cursor:not-allowed; }
+.btn-primary {
+  width:100%; height:52px; border:none; border-radius:var(--radius-input); background:var(--color-brand);
+  color:var(--color-text-inverse); font-size:var(--font-title); font-weight:var(--font-weight-bold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:background .2s;
+}
+.btn-primary:disabled { background:var(--color-brand-disabled); cursor:not-allowed; }
+.btn-primary:active:not(:disabled) { background:var(--color-brand-active); }
+.login-btn { margin-top:40px; }
+
+/* ===== 演示面板 ===== */
+.demo-panel {
+  position:fixed; top:50%; right:0; transform:translateY(-50%);
+  z-index:9999; display:flex; flex-direction:row-reverse; align-items:flex-start;
+}
+.demo-toggle {
+  width:40px; height:40px; background:var(--color-brand); color:var(--color-text-inverse); border:none;
+  border-radius:8px 0 0 8px; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.demo-body {
+  background:#1E293B; color:#F1F5F9; border-radius:8px 0 0 8px;
+  padding:12px; min-width:180px; font-size:12px; display:none;
+}
+.demo-panel.open .demo-body { display:block; }
+.demo-section { margin-bottom:10px; }
+.demo-section-title { font-size:11px; color:#94A3B8; font-weight:600; margin-bottom:6px; }
+.demo-btn {
+  display:block; width:100%; padding:6px 10px; margin-bottom:4px;
+  background:#334155; color:#F1F5F9; border:none; border-radius:6px;
+  font-size:12px; cursor:pointer; text-align:left; transition:background .15s;
+}
+.demo-btn:hover { background:#475569; }
+.demo-btn.active { background:var(--color-brand); }
+.demo-divider { border:none; border-top:1px solid #334155; margin:8px 0; }
+
+/* ===== Toast 提示 ===== */
+.toast-container {
+  position:fixed; top:50%; left:0; right:0; z-index:1000;
+  display:flex; justify-content:center; pointer-events:none;
+  transform:translateY(-50%);
+}
+.toast {
+  min-height:48px; padding:0 24px;
+  background:rgba(17,18,20,0.7); backdrop-filter:blur(8px);
+  border-radius:9999px; display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-body); color:#FFFFFF; font-weight:var(--font-weight-normal);
+  opacity:0; transform:scale(0.9); transition:all .3s ease;
+}
+.toast.show { opacity:1; transform:scale(1); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="right">
+      <span style="letter-spacing:-1px;">&#9679;&#9679;&#9679;</span>
+      <span>5G</span>
+      <span>&#128267;</span>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <button class="back" onclick="history.back()">&#8249;</button>
+    <div class="title">AISE工程信息收集</div>
+    <div class="right-placeholder"></div>
+  </div>
+
+  <!-- 登录表单 -->
+  <div class="page-content">
+    <div class="content-card">
+      <div class="form-group">
+        <label class="form-label">手机号</label>
+        <input class="form-input" type="tel" maxlength="11" v-model="phone" placeholder="请输入手机号" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">验证码</label>
+        <div class="code-row">
+          <input class="form-input" type="tel" maxlength="6" v-model="code" placeholder="请输入 6 位验证码" />
+          <button class="btn-code" :disabled="!canSendCode || counting" @click="sendCode">{{ countText }}</button>
+        </div>
+      </div>
+
+      <button class="btn-primary login-btn" :disabled="!canLogin" @click="doLogin">登录</button>
+    </div>
+  </div>
+
+  <!-- Toast 提示 -->
+  <div class="toast-container" v-if="toastVisible">
+    <div class="toast" :class="{show: toastVisible}">{{ toastMessage }}</div>
+  </div>
+</div>
+
+<!-- ===== 演示面板 ===== -->
+<div id="dp" class="demo-panel open">
+  <button class="demo-toggle" onclick="dToggle()">&#10005;</button>
+  <div class="demo-body" id="db">
+    <div class="demo-section">
+      <div class="demo-section-title">页面</div>
+      <button class="demo-btn active" disabled>P1 登录</button>
+      <button class="demo-btn" onclick="location.href='p2-form.html'">P2 信息填写</button>
+      <button class="demo-btn" onclick="location.href='p3-result.html'">P3 结果</button>
+    </div>
+    <div class="demo-divider"></div>
+    <div class="demo-section">
+      <div class="demo-section-title">P1 操作</div>
+      <button class="demo-btn" onclick="dSetError()">显示错误提示</button>
+      <button class="demo-btn" onclick="dClearError()">清除错误</button>
+      <button class="demo-btn" onclick="dFill()">填充手机号</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 演示面板 ===== */
+function dToggle() {
+  const p = document.getElementById('dp');
+  const b = document.getElementById('db');
+  const isOpen = p.classList.toggle('open');
+  b.style.display = isOpen ? 'block' : 'none';
+  p.querySelector('.demo-toggle').textContent = isOpen ? '\u2715' : '\u2699';
+}
+
+function dSetError() {
+  const v = window.__VUE__; if (v) v.showToast('该账号当前无系统课在课，无法提交');
+}
+function dClearError() {
+  const v = window.__VUE__; if (v) v.showToast('');
+}
+function dFill() {
+  const v = window.__VUE__; if (v) v.fillDemo();
+}
+
+/* ===== Vue 应用 ===== */
+const { createApp, ref, computed } = Vue;
+
+createApp({
+  setup() {
+    const phone = ref('');
+    const code = ref('');
+    const toastVisible = ref(false);
+    const toastMessage = ref('');
+    let toastTimer = null;
+    const counting = ref(false);
+    const countDown = ref(60);
+    let countTimer = null;
+
+    const canSendCode = computed(() => /^1[3-9]\d{9}$/.test(phone.value));
+    const countText = computed(() => counting.value ? `${countDown.value}s后重发` : '发送验证码');
+    const canLogin = computed(() => canSendCode.value && code.value.length === 6);
+
+    function sendCode() {
+      if (!canSendCode.value || counting.value) return;
+      counting.value = true; countDown.value = 60;
+      countTimer = setInterval(() => {
+        countDown.value--;
+        if (countDown.value <= 0) { clearInterval(countTimer); counting.value = false; }
+      }, 1000);
+    }
+
+    function doLogin() {
+      if (!canLogin.value) return;
+      if (phone.value === '13800138000' && code.value === '123456') {
+        showToast('该账号当前无系统课在课，无法提交'); return;
+      }
+      localStorage.setItem('aise_phone', phone.value);
+      location.href = 'p2-form.html';
+    }
+
+    function fillDemo() {
+      phone.value = '13812341234';
+    }
+
+    function showToast(msg, duration = 2000) {
+      toastMessage.value = msg;
+      toastVisible.value = true;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toastVisible.value = false; }, duration);
+    }
+
+    window.__VUE__ = { showToast, fillDemo };
+
+    return { phone, code, toastVisible, toastMessage, counting, countDown, canSendCode, countText, canLogin, sendCode, doLogin, fillDemo };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

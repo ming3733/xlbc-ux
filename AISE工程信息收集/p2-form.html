@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AISE工程信息收集 - 信息填写</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+/* ===== 设计规范 Token ===== */
+:root {
+  --color-brand: #1E7CFF;
+  --color-brand-hover: #4795FF;
+  --color-brand-active: #1B6EE0;
+  --color-brand-disabled: #A5CBFF;
+  --color-brand-light: #E6F2FF;
+  --color-error: #FA655A;
+  --color-warning: #FF9911;
+  --color-success: #4BD175;
+  --color-text-primary: #141414;
+  --color-text-secondary: #626466;
+  --color-text-tertiary: #9DA0A3;
+  --color-text-disabled: #C4C8CC;
+  --color-text-inverse: #FFFFFF;
+  --color-bg-page: #F7F9FA;
+  --color-bg-card: #FFFFFF;
+  --color-divider: #F2F4F5;
+  --font-page-title: 20px;
+  --font-title: 16px;
+  --font-subtitle: 14px;
+  --font-body: 14px;
+  --font-caption: 12px;
+  --font-weight-normal: 500;
+  --font-weight-bold: 600;
+  --radius-card: 24px;
+  --radius-input: 52px;
+  --radius-sm: 8px;
+  --page-padding: 16px;
+  --card-padding: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { font-size:16px; }
+body {
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background:var(--color-bg-page); color:var(--color-text-primary); -webkit-font-smoothing:antialiased;
+}
+#app {
+  width:100%; max-width:430px; margin:0 auto; background:var(--color-bg-page);
+  min-height:100vh; position:relative; overflow-x:hidden;
+}
+
+/* ===== 状态栏 ===== */
+.status-bar {
+  height:44px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--page-padding); font-size:15px; font-weight:var(--font-weight-bold);
+  background:#FFFFFF; color:var(--color-text-primary);
+  position:sticky; top:0; z-index:100;
+}
+.status-bar .time { letter-spacing:0.5px; }
+.status-bar .right { display:flex; align-items:center; gap:4px; }
+
+/* ===== 导航栏 ===== */
+.nav-bar {
+  height:44px; display:grid; grid-template-columns:40px 1fr 40px;
+  align-items:center; justify-items:center;
+  padding:0 var(--page-padding); background:#FFFFFF;
+  position:sticky; top:44px; z-index:99;
+  border-bottom:1px solid var(--color-divider);
+}
+.nav-bar .back {
+  width:36px; height:36px; display:flex; align-items:center; justify-content:flex-start;
+  background:none; border:none; font-size:28px; color:var(--color-text-primary);
+  cursor:pointer; padding-bottom:4px; justify-self:start;
+}
+.nav-bar .title { font-size:var(--font-page-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); text-align:center; }
+
+/* ===== 页面内容 ===== */
+.page-content { padding:16px var(--page-padding) 100px; }
+.content-card {
+  background:var(--color-bg-card); border-radius:var(--radius-card);
+  padding:var(--card-padding) 24px;
+}
+
+/* ===== 表单 ===== */
+.form-group { margin-bottom:24px; }
+.form-group:last-child { margin-bottom:0; }
+.form-label {
+  display:block; font-size:var(--font-title); font-weight:var(--font-weight-normal); color:var(--color-text-primary); margin-bottom:16px;
+}
+.form-label .required { color:var(--color-error); margin-right:2px; }
+.form-input {
+  width:100%; height:52px; border:1px solid var(--color-divider); border-radius:var(--radius-input);
+  padding:0 24px; font-size:var(--font-title); color:var(--color-text-primary); background:var(--color-bg-card);
+  outline:none; transition:border-color .2s; -webkit-appearance:none;
+}
+.form-input::placeholder { color:var(--color-text-disabled); }
+.form-input:focus { border-color:var(--color-brand); }
+.form-input.error { border-color:var(--color-error); }
+
+/* ===== 错误/警告提示 ===== */
+.warn-tip {
+  background:#F7F9FA; border-radius:var(--radius-sm); padding:16px;
+  margin-bottom:24px;
+}
+.warn-tip .warn-title {
+  font-size:var(--font-subtitle); font-weight:var(--font-weight-bold);
+  color:var(--color-text-primary); margin-bottom:4px;
+}
+.warn-tip .warn-text {
+  font-size:var(--font-caption); color:#78828F; line-height:1.5;
+}
+.error-card {
+  background:rgba(250, 101, 90, 0.1); border-radius:16px;
+  padding:24px; margin-bottom:24px; margin-top:0;
+}
+.error-card h4 { font-size:var(--font-title); font-weight:var(--font-weight-bold); color:var(--color-error); margin-bottom:8px; }
+.error-card p { font-size:var(--font-body); color:var(--color-text-primary); line-height:1.5; }
+
+/* ===== 照片上传 ===== */
+.photo-section { display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
+.photo-info { width:100%; }
+.photo-info .photo-label { font-size:var(--font-title); font-weight:var(--font-weight-normal); color:var(--color-text-primary); margin-bottom:8px; }
+.photo-info .photo-label .required { color:var(--color-error); margin-right:2px; }
+.photo-info .photo-desc { font-size:var(--font-caption); color:var(--color-text-secondary); line-height:1.6; }
+.photo-upload {
+  width:120px; height:156px; border:1px dashed var(--color-text-tertiary); border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center; background:var(--color-bg-page);
+  cursor:pointer; overflow:hidden; position:relative;
+}
+.photo-upload .plus { font-size:32px; color:var(--color-text-tertiary); font-weight:300; }
+.photo-upload img { width:100%; height:100%; object-fit:cover; }
+.photo-upload.disabled { opacity:0.5; cursor:not-allowed; pointer-events:none; }
+.photo-upload.disabled::after {
+  content:'请先完善信息'; position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.85);
+  color:var(--color-text-tertiary); font-size:11px; text-align:center; padding:8px; line-height:1.4;
+}
+
+/* ===== 性别选择 ===== */
+.gender-select {
+  width:100%; height:52px; border:1px solid var(--color-divider); border-radius:var(--radius-input);
+  padding:0 24px; display:flex; align-items:center; font-size:var(--font-title);
+  color:var(--color-text-primary); background:var(--color-bg-card); cursor:pointer; position:relative;
+}
+.gender-select .placeholder { color:var(--color-text-disabled); }
+.gender-select .arrow { position:absolute; right:16px; color:var(--color-text-tertiary); font-size:18px; }
+
+/* ===== 底部性别选择器 ===== */
+.gender-picker-overlay {
+  position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.4);
+  z-index:199; opacity:0; visibility:hidden; transition:opacity .3s;
+}
+.gender-picker-overlay.show { opacity:1; visibility:visible; }
+.gender-picker {
+  position:fixed; bottom:0; left:0; right:0; background:var(--color-bg-card);
+  border-radius:var(--radius-card) var(--radius-card) 0 0; z-index:200; transform:translateY(100%);
+  transition:transform .3s ease; max-width:430px; margin:0 auto;
+}
+.gender-picker.show { transform:translateY(0); }
+.gender-picker-header {
+  padding:16px; text-align:center; font-size:var(--font-subtitle); color:var(--color-text-secondary);
+  border-bottom:1px solid var(--color-divider);
+}
+.gender-picker-item {
+  padding:16px; text-align:center; font-size:var(--font-title); color:var(--color-text-primary);
+  cursor:pointer; border-bottom:1px solid var(--color-divider);
+}
+.gender-picker-item:last-child { border-bottom:none; }
+.gender-picker-item:active { background:var(--color-bg-page); }
+
+/* ===== 按钮 ===== */
+.btn-primary {
+  width:100%; height:52px; border:none; border-radius:var(--radius-input); background:var(--color-brand);
+  color:var(--color-text-inverse); font-size:var(--font-title); font-weight:var(--font-weight-bold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:background .2s;
+}
+.btn-primary:disabled { background:var(--color-brand-disabled); cursor:not-allowed; }
+.btn-primary:active:not(:disabled) { background:var(--color-brand-active); }
+.bottom-bar {
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:430px;
+  padding:16px var(--page-padding) calc(16px + env(safe-area-inset-bottom));
+  background:var(--color-bg-card); border-top:1px solid var(--color-divider); z-index:50;
+}
+
+/* ===== 字段错误提示 ===== */
+.field-error { color:var(--color-error); font-size:var(--font-caption); margin-top:6px; }
+
+/* ===== 切换账号卡片 ===== */
+.switch-account-card {
+  background:var(--color-bg-card); border-radius:var(--radius-card);
+  height:64px; padding:0 24px; margin-top:16px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.switch-account-label {
+  font-size:var(--font-title); font-weight:var(--font-weight-normal); color:var(--color-text-primary);
+}
+.switch-account-btn {
+  height:32px; padding:0 16px;
+  border:1px solid var(--color-brand); border-radius:9999px;
+  background:#FFFFFF; color:var(--color-brand);
+  font-size:var(--font-body); font-weight:var(--font-weight-bold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.switch-account-btn:active { background:var(--color-brand-light); }
+
+/* ===== 演示面板 ===== */
+.demo-panel {
+  position:fixed; top:50%; right:0; transform:translateY(-50%);
+  z-index:9999; display:flex; flex-direction:row-reverse; align-items:flex-start;
+}
+.demo-toggle {
+  width:40px; height:40px; background:var(--color-brand); color:var(--color-text-inverse); border:none;
+  border-radius:8px 0 0 8px; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.demo-body {
+  background:#1E293B; color:#F1F5F9; border-radius:8px 0 0 8px;
+  padding:12px; min-width:180px; font-size:12px; display:none;
+}
+.demo-panel.open .demo-body { display:block; }
+.demo-section { margin-bottom:10px; }
+.demo-section-title { font-size:11px; color:#94A3B8; font-weight:600; margin-bottom:6px; }
+.demo-btn {
+  display:block; width:100%; padding:6px 10px; margin-bottom:4px;
+  background:#334155; color:#F1F5F9; border:none; border-radius:6px;
+  font-size:12px; cursor:pointer; text-align:left; transition:background .15s;
+}
+.demo-btn:hover { background:#475569; }
+.demo-btn.active { background:var(--color-brand); }
+.demo-divider { border:none; border-top:1px solid #334155; margin:8px 0; }
+
+/* ===== Toast 提示 ===== */
+.toast-container {
+  position:fixed; top:50%; left:0; right:0; z-index:1000;
+  display:flex; justify-content:center; pointer-events:none;
+  transform:translateY(-50%);
+}
+.toast {
+  min-height:48px; padding:0 24px;
+  background:rgba(17,18,20,0.7); backdrop-filter:blur(8px);
+  border-radius:9999px; display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-body); color:#FFFFFF; font-weight:var(--font-weight-normal);
+  opacity:0; transform:scale(0.9); transition:all .3s ease;
+}
+.toast.show { opacity:1; transform:scale(1); }
+
+/* ===== 确认弹窗 ===== */
+.dialog-overlay {
+  position:fixed; inset:0; z-index:2000;
+  background:rgba(0,0,0,0.6);
+  display:flex; align-items:center; justify-content:center;
+  padding:0 40px;
+}
+.dialog-box {
+  background:#FFFFFF; border-radius:24px; width:100%; max-width:320px;
+  padding:32px 24px 24px; text-align:center;
+  animation:dialogIn .2s ease;
+}
+@keyframes dialogIn {
+  from { opacity:0; transform:scale(0.9); }
+  to   { opacity:1; transform:scale(1); }
+}
+.dialog-title { font-size:var(--font-page-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:12px; }
+.dialog-message { font-size:var(--font-body); color:var(--color-text-secondary); line-height:1.5; margin-bottom:24px; }
+.dialog-actions { display:flex; gap:12px; }
+.dialog-btn {
+  flex:1; height:48px; border-radius:9999px; font-size:var(--font-title); font-weight:var(--font-weight-bold);
+  cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.dialog-btn.cancel { background:#FFFFFF; color:var(--color-text-primary); border:1px solid var(--color-divider); }
+.dialog-btn.cancel:active { background:var(--color-bg-page); }
+.dialog-btn.confirm { background:var(--color-brand); color:#FFFFFF; }
+.dialog-btn.confirm:active { background:var(--color-brand-active); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="right">
+      <span style="letter-spacing:-1px;">&#9679;&#9679;&#9679;</span>
+      <span>5G</span>
+      <span>&#128267;</span>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <button class="back" @click="goBack">&#8249;</button>
+    <div class="title">AISE工程信息收集</div>
+    <div class="right-placeholder"></div>
+  </div>
+
+  <!-- 页面内容 -->
+  <div class="page-content">
+    <div class="content-card">
+      <div v-if="showWarnTip" class="warn-tip">
+        <div class="warn-title">请先登录小鹿AI编程账号</div>
+        <div class="warn-text">为获取小鹿AI编程已有的个人信息，无需重复填写</div>
+      </div>
+
+      <!-- 审核失败红色卡片 -->
+      <div v-if="auditStatus === 'rejected'" class="error-card">
+        <h4>上次提交审核未通过</h4>
+        <p>原因：{{ auditFailReason }}，请重新上传符合要求的照片后再次提交。</p>
+      </div>
+
+      <!-- 照片上传 -->
+      <div class="photo-section">
+        <div class="photo-info">
+          <div class="photo-label"><span class="required">*</span>1寸免冠证件照</div>
+          <div class="photo-desc">
+            请上传本人近期1寸免冠证件照。<br/>
+            标准尺寸：295x413像素（宽：高≈1:1.4）<br/>
+            支持JPG/PNG格式，文件大小不超过5MB。
+          </div>
+        </div>
+        <div class="photo-upload" :class="{disabled: photoDisabled}" @click="selectPhoto">
+          <img v-if="form.photo" :src="form.photo" alt="证件照" />
+          <span v-else class="plus">+</span>
+          <input type="file" accept="image/jpeg,image/png,image/jpg" ref="photoInput" @change="handlePhotoUpload" style="display:none;" />
+        </div>
+      </div>
+
+      <!-- 表单字段 -->
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>手机号</label>
+        <input class="form-input" type="tel" maxlength="11" v-model="form.phone" placeholder="请输入手机号" :class="{error: fieldErrors.phone}" />
+        <div v-if="fieldErrors.phone" class="field-error">{{ fieldErrors.phone }}</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>身份证号</label>
+        <input class="form-input" type="text" maxlength="18" v-model="form.idCard" placeholder="请输入18位身份证号" :class="{error: fieldErrors.idCard}" />
+        <div v-if="fieldErrors.idCard" class="field-error">{{ fieldErrors.idCard }}</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>真实姓名</label>
+        <input class="form-input" type="text" v-model="form.realName" placeholder="请输入真实姓名" :class="{error: fieldErrors.realName}" />
+        <div v-if="fieldErrors.realName" class="field-error">{{ fieldErrors.realName }}</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>性别</label>
+        <div class="gender-select" @click="showGenderPicker = true">
+          <span :class="{placeholder: !form.gender}">{{ form.gender || '请选择' }}</span>
+          <span class="arrow">&#8250;</span>
+        </div>
+        <div v-if="fieldErrors.gender" class="field-error">{{ fieldErrors.gender }}</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>紧急联系人姓名</label>
+        <input class="form-input" type="text" v-model="form.guardianName" placeholder="请输入紧急联系人姓名" :class="{error: fieldErrors.guardianName}" />
+        <div v-if="fieldErrors.guardianName" class="field-error">{{ fieldErrors.guardianName }}</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>紧急联系人电话</label>
+        <input class="form-input" type="tel" maxlength="11" v-model="form.guardianPhone" placeholder="请输入紧急联系人手机号" :class="{error: fieldErrors.guardianPhone}" />
+        <div v-if="fieldErrors.guardianPhone" class="field-error">{{ fieldErrors.guardianPhone }}</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">详细寄送地址</label>
+        <input class="form-input" type="text" v-model="form.streetAddress" placeholder="选填" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><span class="required">*</span>渠道识别码</label>
+        <input class="form-input" type="text" v-model="form.channelCode" placeholder="请输入渠道码" :class="{error: fieldErrors.channelCode}" />
+        <div v-if="fieldErrors.channelCode" class="field-error">{{ fieldErrors.channelCode }}</div>
+      </div>
+    </div>
+
+    <!-- 切换账号卡片 -->
+    <div class="switch-account-card">
+      <span class="switch-account-label">切换账号</span>
+      <button class="switch-account-btn" @click="switchAccount">切换</button>
+    </div>
+  </div>
+
+  <!-- 底部提交按钮 -->
+  <div class="bottom-bar">
+    <button class="btn-primary" :disabled="!canSubmit" @click="doSubmit">
+      {{ auditStatus === 'rejected' ? '修改并重新提交' : '提交信息' }}
+    </button>
+  </div>
+
+  <!-- 性别选择器 -->
+  <div class="gender-picker-overlay" :class="{show: showGenderPicker}" @click="showGenderPicker = false"></div>
+  <div class="gender-picker" :class="{show: showGenderPicker}">
+    <div class="gender-picker-header">选择性别</div>
+    <div class="gender-picker-item" @click="selectGender('男')">男</div>
+    <div class="gender-picker-item" @click="selectGender('女')" style="margin-bottom:24px;">女</div>
+  </div>
+
+  <!-- Toast 提示 -->
+  <div class="toast-container" v-if="toastVisible">
+    <div class="toast" :class="{show: toastVisible}">{{ toastMessage }}</div>
+  </div>
+
+  <!-- 切换账号确认弹窗 -->
+  <div class="dialog-overlay" v-if="showSwitchDialog">
+    <div class="dialog-box">
+      <div class="dialog-title">切换账号</div>
+      <div class="dialog-message">确定要切换账号吗？</div>
+      <div class="dialog-actions">
+        <button class="dialog-btn cancel" @click="showSwitchDialog = false">取消</button>
+        <button class="dialog-btn confirm" @click="confirmSwitchAccount">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 演示面板 ===== -->
+<div id="dp" class="demo-panel open">
+  <button class="demo-toggle" onclick="dToggle()">&#10005;</button>
+  <div class="demo-body" id="db">
+    <div class="demo-section">
+      <div class="demo-section-title">页面</div>
+      <button class="demo-btn" onclick="location.href='p1-login.html'">P1 登录</button>
+      <button class="demo-btn active">P2 信息填写</button>
+      <button class="demo-btn" onclick="location.href='p3-result.html'">P3 结果</button>
+    </div>
+    <div class="demo-divider"></div>
+    <div class="demo-section">
+      <div class="demo-section-title">P2 状态</div>
+      <button class="demo-btn" onclick="dSetP2('')">空表单</button>
+      <button class="demo-btn" onclick="dSetP2('rejected')">审核失败回填</button>
+    </div>
+    <div class="demo-divider"></div>
+    <div class="demo-section">
+      <div class="demo-section-title">操作</div>
+      <button class="demo-btn" onclick="dFill()">填充数据</button>
+      <button class="demo-btn" onclick="dReset()">重置</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 演示面板 ===== */
+function dToggle() {
+  const p = document.getElementById('dp');
+  const b = document.getElementById('db');
+  const isOpen = p.classList.toggle('open');
+  b.style.display = isOpen ? 'block' : 'none';
+  p.querySelector('.demo-toggle').textContent = isOpen ? '\u2715' : '\u2699';
+}
+function dSetP2(status) {
+  const v = window.__VUE__; if (!v) return;
+  v.setAuditStatus(status); setTimeout(dSync, 50);
+}
+function dFill() {
+  const v = window.__VUE__; if (v) v.fillDemo(); setTimeout(dSync, 50);
+}
+function dReset() {
+  const v = window.__VUE__; if (v) v.resetDemo(); setTimeout(dSync, 50);
+}
+function dSync() {
+  const v = window.__VUE__; if (!v) return;
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  const audit = v.getAuditStatus();
+  document.querySelectorAll('.demo-btn').forEach(b => {
+    const t = b.textContent.trim();
+    if (t.includes('P1')) b.classList.add('active');
+    if (t.includes('空表单') && !audit) b.classList.add('active');
+    if (t.includes('审核失败') && audit === 'rejected') b.classList.add('active');
+  });
+}
+
+/* ===== Vue 应用 ===== */
+const { createApp, ref, computed } = Vue;
+
+createApp({
+  setup() {
+    const auditStatus = ref(''); // '', 'rejected'
+    const auditFailReason = ref('证件照不清晰，请重新上传符合要求的照片后再次提交');
+    const showGenderPicker = ref(false);
+    const showWarnTip = ref(true);
+    const toastVisible = ref(false);
+    const toastMessage = ref('');
+    let toastTimer = null;
+    const showSwitchDialog = ref(false);
+
+    // 从 localStorage 恢复数据
+    const savedPhone = localStorage.getItem('aise_phone') || '';
+    const savedForm = localStorage.getItem('aise_form');
+    const savedAudit = localStorage.getItem('aise_audit');
+    let initForm = { phone: savedPhone, idCard: '', realName: '', gender: '', guardianName: '', guardianPhone: '', streetAddress: '', channelCode: '', photo: '' };
+    if (savedForm) {
+      try {
+        const parsed = JSON.parse(savedForm);
+        initForm = { ...initForm, ...parsed };
+      } catch(e) {}
+    }
+    if (savedAudit) {
+      auditStatus.value = savedAudit;
+    }
+
+    const form = ref(initForm);
+    const fieldErrors = ref({});
+    const photoInput = ref(null);
+
+    const canSubmit = computed(() => {
+      return form.value.phone && form.value.idCard && form.value.realName &&
+             form.value.gender && form.value.guardianName && form.value.guardianPhone && form.value.channelCode;
+    });
+    const photoDisabled = computed(() => false);
+
+    function doSubmit() {
+      fieldErrors.value = {};
+      if (!form.value.phone) fieldErrors.value.phone = '请输入手机号';
+      else if (!/^1[3-9]\d{9}$/.test(form.value.phone)) fieldErrors.value.phone = '请输入正确的11位手机号';
+      if (!form.value.idCard) fieldErrors.value.idCard = '请输入身份证号';
+      else if (!/^\d{17}[\dXx]$/.test(form.value.idCard)) fieldErrors.value.idCard = '请输入正确的18位身份证号';
+      if (!form.value.realName) fieldErrors.value.realName = '请输入真实姓名';
+      if (!form.value.gender) fieldErrors.value.gender = '请选择性别';
+      if (!form.value.guardianName) fieldErrors.value.guardianName = '请输入紧急联系人姓名';
+      if (!form.value.guardianPhone) fieldErrors.value.guardianPhone = '请输入紧急联系人电话';
+      else if (!/^1[3-9]\d{9}$/.test(form.value.guardianPhone)) fieldErrors.value.guardianPhone = '请输入正确的11位手机号';
+      if (!form.value.channelCode) fieldErrors.value.channelCode = '请输入渠道码';
+      if (Object.keys(fieldErrors.value).length > 0) return;
+      // 保存到 localStorage，跳转 P3
+      localStorage.setItem('aise_form', JSON.stringify({
+        phone: form.value.phone,
+        realName: form.value.realName,
+        gender: form.value.gender,
+        guardianName: form.value.guardianName,
+        guardianPhone: form.value.guardianPhone,
+        channelCode: form.value.channelCode,
+        photo: form.value.photo
+      }));
+      localStorage.setItem('aise_audit', 'pending');
+      location.href = 'p3-result.html';
+    }
+
+    function selectGender(gender) { form.value.gender = gender; showGenderPicker.value = false; }
+    function selectPhoto() {
+      if (photoDisabled.value) return;
+      photoInput.value?.click();
+    }
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        form.value.photo = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    function goBack() {
+      location.href = 'p1-login.html';
+    }
+    function switchAccount() {
+      showSwitchDialog.value = true;
+    }
+    function confirmSwitchAccount() {
+      showSwitchDialog.value = false;
+      localStorage.removeItem('aise_phone');
+      localStorage.removeItem('aise_form');
+      localStorage.removeItem('aise_audit');
+      location.href = 'index.html';
+    }
+    function showToast(msg, duration = 2000) {
+      toastMessage.value = msg;
+      toastVisible.value = true;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toastVisible.value = false; }, duration);
+    }
+    function fillDemo() {
+      form.value = {
+        phone: savedPhone || '13812341234',
+        idCard:'110101200801011234', realName:'张三', gender:'男',
+        guardianName:'张大三', guardianPhone:'13912345678',
+        streetAddress:'北京市朝阳区xxx街道', channelCode:'AISE-001',
+        photo:''
+      };
+    }
+    function resetDemo() {
+      form.value = { phone:savedPhone, idCard:'', realName:'', gender:'', guardianName:'', guardianPhone:'', streetAddress:'', channelCode:'', photo:'' };
+      fieldErrors.value = {};
+    }
+    function setAuditStatus(status) { auditStatus.value = status; }
+
+    window.__VUE__ = {
+      setAuditStatus, fillDemo, resetDemo,
+      getAuditStatus: () => auditStatus.value
+    };
+
+    return {
+      auditStatus, auditFailReason, showGenderPicker, showWarnTip,
+      toastVisible, toastMessage, showSwitchDialog,
+      form, fieldErrors, photoInput,
+      canSubmit, photoDisabled,
+      doSubmit, selectGender, selectPhoto, handlePhotoUpload, goBack, switchAccount, confirmSwitchAccount, showToast, fillDemo, resetDemo
+    };
+  }
+}).mount('#app');
+
+setTimeout(dSync, 300);
+</script>
+</body>
+</html>

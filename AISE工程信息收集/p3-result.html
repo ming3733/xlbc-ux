@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AISE工程信息收集 - 提交结果</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+/* ===== 设计规范 Token ===== */
+:root {
+  --color-brand: #1E7CFF;
+  --color-brand-active: #1B6EE0;
+  --color-brand-disabled: #A5CBFF;
+  --color-error: #FA655A;
+  --color-warning: #FF9911;
+  --color-success: #4BD175;
+  --color-text-primary: #141414;
+  --color-text-secondary: #626466;
+  --color-text-tertiary: #9DA0A3;
+  --color-text-disabled: #C4C8CC;
+  --color-text-inverse: #FFFFFF;
+  --color-bg-page: #F7F9FA;
+  --color-bg-card: #FFFFFF;
+  --color-divider: #F2F4F5;
+  --font-page-title: 20px;
+  --font-title: 16px;
+  --font-subtitle: 14px;
+  --font-body: 14px;
+  --font-caption: 12px;
+  --font-weight-normal: 500;
+  --font-weight-bold: 600;
+  --radius-card: 24px;
+  --radius-sm: 8px;
+  --page-padding: 16px;
+  --card-padding: 32px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { font-size:16px; }
+body {
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background:var(--color-bg-page); color:var(--color-text-primary); -webkit-font-smoothing:antialiased;
+}
+#app {
+  width:100%; max-width:430px; margin:0 auto; background:var(--color-bg-page);
+  min-height:100vh; position:relative; overflow-x:hidden;
+}
+
+/* ===== 状态栏 ===== */
+.status-bar {
+  height:44px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--page-padding); font-size:15px; font-weight:var(--font-weight-bold);
+  background:#FFFFFF; color:var(--color-text-primary);
+  position:sticky; top:0; z-index:100;
+}
+.status-bar .time { letter-spacing:0.5px; }
+.status-bar .right { display:flex; align-items:center; gap:4px; }
+
+/* ===== 导航栏 ===== */
+.nav-bar {
+  height:44px; display:grid; grid-template-columns:40px 1fr 40px;
+  align-items:center; justify-items:center;
+  padding:0 var(--page-padding); background:#FFFFFF;
+  position:sticky; top:44px; z-index:99;
+  border-bottom:1px solid var(--color-divider);
+}
+.nav-bar .back {
+  width:36px; height:36px; display:flex; align-items:center; justify-content:flex-start;
+  background:none; border:none; font-size:28px; color:var(--color-text-primary);
+  cursor:pointer; padding-bottom:4px; justify-self:start;
+}
+.nav-bar .title { font-size:var(--font-page-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); text-align:center; }
+
+/* ===== 页面内容 ===== */
+.page-content { padding:16px var(--page-padding) 40px; }
+.content-card {
+  background:var(--color-bg-card); border-radius:var(--radius-card);
+  padding:32px 24px 24px;
+}
+
+/* ===== 成功页 ===== */
+.page-result { text-align:center; }
+.result-icon {
+  width:80px; height:80px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 24px; font-size:36px; color:#FFFFFF;
+}
+.result-icon.approved { background:var(--color-success); }
+.result-icon.pending  { background:var(--color-success); }
+.result-icon.rejected { background:var(--color-error); }
+.result-title { font-size:24px; font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:0; }
+.result-title.green { color:var(--color-text-primary); }
+.result-subtitle { font-size:var(--font-body); color:var(--color-text-secondary); line-height:1.5; margin-bottom:64px; padding:8px 24px 0; }
+
+/* ===== 回执卡片 ===== */
+.receipt-card {
+  background:var(--color-bg-page); border-radius:var(--radius-sm); padding:20px; text-align:left;
+}
+.receipt-card h4 { font-size:var(--font-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:16px; }
+.receipt-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 0; border-bottom:1px solid var(--color-divider);
+}
+.receipt-item:last-child { border-bottom:none; }
+.receipt-item .label { font-size:var(--font-body); color:var(--color-text-secondary); }
+.receipt-item .value { font-size:var(--font-body); color:var(--color-text-primary); font-weight:var(--font-weight-normal); }
+.receipt-photo { width:74px; height:96px; object-fit:cover; border-radius:10px; display:block; }
+.receipt-photo-placeholder { width:74px; height:96px; border-radius:10px; background:#FFFFFF; border:1px solid #E1E9F5; }
+
+/* ===== 演示面板 ===== */
+.demo-panel {
+  position:fixed; top:50%; right:0; transform:translateY(-50%);
+  z-index:9999; display:flex; flex-direction:row-reverse; align-items:flex-start;
+}
+.demo-toggle {
+  width:40px; height:40px; background:var(--color-brand); color:var(--color-text-inverse); border:none;
+  border-radius:8px 0 0 8px; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.demo-body {
+  background:#1E293B; color:#F1F5F9; border-radius:8px 0 0 8px;
+  padding:12px; min-width:180px; font-size:12px; display:none;
+}
+.demo-panel.open .demo-body { display:block; }
+.demo-section { margin-bottom:10px; }
+.demo-section-title { font-size:11px; color:#94A3B8; font-weight:600; margin-bottom:6px; }
+.demo-btn {
+  display:block; width:100%; padding:6px 10px; margin-bottom:4px;
+  background:#334155; color:#F1F5F9; border:none; border-radius:6px;
+  font-size:12px; cursor:pointer; text-align:left; transition:background .15s;
+}
+.demo-btn:hover { background:#475569; }
+.demo-btn.active { background:var(--color-brand); }
+.demo-divider { border:none; border-top:1px solid #334155; margin:8px 0; }
+
+/* ===== Toast 提示 ===== */
+.toast-container {
+  position:fixed; top:50%; left:0; right:0; z-index:1000;
+  display:flex; justify-content:center; pointer-events:none;
+  transform:translateY(-50%);
+}
+.toast {
+  min-height:48px; padding:0 24px;
+  background:rgba(17,18,20,0.7); backdrop-filter:blur(8px);
+  border-radius:9999px; display:flex; align-items:center; justify-content:center;
+  font-size:var(--font-body); color:#FFFFFF; font-weight:var(--font-weight-normal);
+  opacity:0; transform:scale(0.9); transition:all .3s ease;
+}
+.toast.show { opacity:1; transform:scale(1); }
+
+/* ===== 操作按钮 ===== */
+.result-actions { margin-top:24px; display:flex; flex-direction:column; gap:12px; }
+.btn-primary {
+  width:100%; height:52px; border:none; border-radius:9999px; background:var(--color-brand);
+  color:var(--color-text-inverse); font-size:var(--font-title); font-weight:var(--font-weight-bold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:background .2s;
+}
+.btn-primary:active { background:var(--color-brand-active); }
+.btn-outline {
+  width:100%; height:52px; border:1px solid var(--color-divider); border-radius:9999px;
+  background:var(--color-bg-card); color:var(--color-text-primary);
+  font-size:var(--font-title); font-weight:var(--font-weight-normal); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.btn-outline:active { background:var(--color-bg-page); }
+.dialog-overlay {
+  position:fixed; inset:0; z-index:2000;
+  background:rgba(0,0,0,0.6);
+  display:flex; align-items:center; justify-content:center;
+  padding:0 40px;
+}
+.dialog-box {
+  background:#FFFFFF; border-radius:24px; width:100%; max-width:320px;
+  padding:32px 24px 24px; text-align:center;
+  animation:dialogIn .2s ease;
+}
+@keyframes dialogIn {
+  from { opacity:0; transform:scale(0.9); }
+  to   { opacity:1; transform:scale(1); }
+}
+.dialog-title { font-size:var(--font-page-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:12px; }
+.dialog-message { font-size:var(--font-body); color:var(--color-text-secondary); line-height:1.5; margin-bottom:24px; }
+.dialog-actions { display:flex; gap:12px; }
+.dialog-btn {
+  flex:1; height:48px; border-radius:9999px; font-size:var(--font-title); font-weight:var(--font-weight-bold);
+  cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.dialog-btn.cancel { background:#FFFFFF; color:var(--color-text-primary); border:1px solid var(--color-divider); }
+.dialog-btn.cancel:active { background:var(--color-bg-page); }
+.dialog-btn.confirm { background:var(--color-brand); color:#FFFFFF; }
+.dialog-btn.confirm:active { background:var(--color-brand-active); }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="right">
+      <span style="letter-spacing:-1px;">&#9679;&#9679;&#9679;</span>
+      <span>5G</span>
+      <span>&#128267;</span>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <button class="back" @click="goBack">&#8249;</button>
+    <div class="title">提交结果</div>
+    <div class="right-placeholder"></div>
+  </div>
+
+  <!-- 结果页内容 -->
+  <div class="page-content">
+    <div class="content-card">
+      <div class="page-result">
+        <div class="result-icon" :class="auditStatus">
+          <span v-if="auditStatus === 'approved'">&#10003;</span>
+          <span v-else-if="auditStatus === 'rejected'">&#10005;</span>
+          <span v-else>&#10003;</span>
+        </div>
+        <div class="result-title" :class="{green: auditStatus === 'approved'}">
+          {{ resultTitle }}
+        </div>
+        <div class="result-subtitle">{{ resultSubtitle }}</div>
+
+        <div class="receipt-card">
+          <h4>提交回执</h4>
+          <div class="receipt-item">
+            <span class="label">姓名</span>
+            <span class="value">{{ form.realName || '张三' }}</span>
+          </div>
+          <div class="receipt-item">
+            <span class="label">手机号</span>
+            <span class="value">{{ maskPhone(form.phone) }}</span>
+          </div>
+          <div v-if="form.channelCode" class="receipt-item">
+            <span class="label">渠道</span>
+            <span class="value">{{ form.channelCode }}</span>
+          </div>
+          <div class="receipt-item">
+            <span class="label">证件照</span>
+            <img v-if="form.photo" :src="form.photo" alt="证件照" class="receipt-photo" />
+            <div v-else class="receipt-photo-placeholder"></div>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="result-actions">
+          <button v-if="auditStatus === 'approved'" class="btn-outline" @click="goHome">返回首页</button>
+          <button v-if="auditStatus === 'rejected'" class="btn-primary" @click="goEdit">修改信息</button>
+          <button v-if="auditStatus === 'pending'" class="btn-outline" @click="goHome">返回首页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 提示 -->
+  <div class="toast-container" v-if="toastVisible">
+    <div class="toast" :class="{show: toastVisible}">{{ toastMessage }}</div>
+  </div>
+</div>
+
+<!-- ===== 演示面板 ===== -->
+<div id="dp" class="demo-panel open">
+  <button class="demo-toggle" onclick="dToggle()">&#10005;</button>
+  <div class="demo-body" id="db">
+    <div class="demo-section">
+      <div class="demo-section-title">页面</div>
+      <button class="demo-btn" onclick="location.href='p1-login.html'">P1 登录</button>
+      <button class="demo-btn" onclick="location.href='p2-form.html'">P2 信息填写</button>
+      <button class="demo-btn active">P3 结果</button>
+    </div>
+    <div class="demo-divider"></div>
+    <div class="demo-section">
+      <div class="demo-section-title">P3 状态</div>
+      <button class="demo-btn" onclick="dSetAudit('pending')">审核中</button>
+      <button class="demo-btn" onclick="dSetAudit('approved')">审核通过</button>
+      <button class="demo-btn" onclick="dSetAudit('rejected')">审核失败</button>
+    </div>
+    <div class="demo-divider"></div>
+    <div class="demo-section">
+      <div class="demo-section-title">操作</div>
+      <button class="demo-btn" onclick="dFill()">填充数据</button>
+      <button class="demo-btn" onclick="dReset()">重置</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 演示面板 ===== */
+function dToggle() {
+  const p = document.getElementById('dp');
+  const b = document.getElementById('db');
+  const isOpen = p.classList.toggle('open');
+  b.style.display = isOpen ? 'block' : 'none';
+  p.querySelector('.demo-toggle').textContent = isOpen ? '\u2715' : '\u2699';
+  if (isOpen) dSync();
+}
+function dSetAudit(status) {
+  const v = window.__VUE__; if (!v) return;
+  v.setAuditStatus(status); setTimeout(dSync, 50);
+}
+function dFill() {
+  const v = window.__VUE__; if (v) v.fillDemo(); setTimeout(dSync, 50);
+}
+function dReset() {
+  const v = window.__VUE__; if (v) v.resetDemo(); setTimeout(dSync, 50);
+}
+function dSync() {
+  const v = window.__VUE__; if (!v) return;
+  document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+  const audit = v.getAuditStatus();
+  document.querySelectorAll('.demo-btn').forEach(b => {
+    const t = b.textContent.trim();
+    if (t.includes('审核中') && audit === 'pending') b.classList.add('active');
+    if (t.includes('通过') && audit === 'approved') b.classList.add('active');
+    if (t.includes('失败') && audit === 'rejected') b.classList.add('active');
+  });
+}
+
+/* ===== Vue 应用 ===== */
+const { createApp, ref, computed, onMounted } = Vue;
+
+createApp({
+  setup() {
+    const auditStatus = ref('pending');
+    const form = ref({
+      phone: '', realName: '', gender: '', guardianName: '', guardianPhone: '',
+      channelCode: '', photo: ''
+    });
+    const toastVisible = ref(false);
+    const toastMessage = ref('');
+    let toastTimer = null;
+
+    onMounted(() => {
+      const savedForm = localStorage.getItem('aise_form');
+      const savedAudit = localStorage.getItem('aise_audit');
+      if (savedForm) {
+        try { form.value = JSON.parse(savedForm); } catch(e) {}
+      }
+      if (savedAudit) {
+        auditStatus.value = savedAudit;
+      }
+    });
+
+    const resultTitle = computed(() => {
+      if (auditStatus.value === 'approved') return '审核通过';
+      if (auditStatus.value === 'rejected') return '审核失败';
+      return '提交成功';
+    });
+    const resultSubtitle = computed(() => {
+      if (auditStatus.value === 'approved') return '正式报名时，赛事方会自动用本次信息预填，不需要再填一遍。';
+      if (auditStatus.value === 'rejected') return '请根据审核意见修改信息后重新提交。';
+      return '你的信息已提交，我们会尽快审核。';
+    });
+
+    function maskPhone(phone) {
+      if (!phone || phone.length !== 11) return phone;
+      return phone.slice(0,3) + '****' + phone.slice(7);
+    }
+    function goBack() {
+      // 返回 P2 时保留审核状态和表单数据
+      localStorage.setItem('aise_audit', auditStatus.value);
+      location.href = 'p2-form.html';
+    }
+    function goEdit() {
+      // 审核失败：跳转到 P2 修改，保留审核状态
+      localStorage.setItem('aise_audit', auditStatus.value);
+      location.href = 'p2-form.html';
+    }
+    function goHome() {
+      location.href = 'index.html';
+    }
+    function showToast(msg, duration = 2000) {
+      toastMessage.value = msg;
+      toastVisible.value = true;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toastVisible.value = false; }, duration);
+    }
+    function setAuditStatus(status) { auditStatus.value = status; }
+    function fillDemo() {
+      form.value = {
+        phone:'13812341234', realName:'张三', gender:'男',
+        guardianName:'张大三', guardianPhone:'13912345678',
+        channelCode:'AISE-001',
+        photo:'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="74" height="96"%3E%3Crect fill="%23FFFFFF" width="74" height="96" rx="10" stroke="%23E1E9F5" stroke-width="2"/%3E%3C/svg%3E'
+      };
+      auditStatus.value = 'approved';
+    }
+    function resetDemo() {
+      form.value = { phone:'', realName:'', gender:'', guardianName:'', guardianPhone:'', channelCode:'', photo:'' };
+      auditStatus.value = 'pending';
+    }
+
+    window.__VUE__ = {
+      setAuditStatus, fillDemo, resetDemo,
+      getAuditStatus: () => auditStatus.value
+    };
+
+    return { auditStatus, form, resultTitle, resultSubtitle, maskPhone, goBack, goEdit, goHome, showToast, fillDemo, resetDemo, toastVisible, toastMessage };
+  }
+}).mount('#app');
+
+setTimeout(dSync, 300);
+</script>
+</body>
+</html>

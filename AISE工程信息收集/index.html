@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AISE工程信息收集</title>
+<style>
+/* ===== 设计规范 Token ===== */
+:root {
+  --color-brand: #1E7CFF;
+  --color-brand-hover: #4795FF;
+  --color-brand-active: #1B6EE0;
+  --color-brand-disabled: #A5CBFF;
+  --color-error: #FA655A;
+  --color-warning: #FF9911;
+  --color-success: #4BD175;
+  --color-text-primary: #141414;
+  --color-text-secondary: #626466;
+  --color-text-tertiary: #9DA0A3;
+  --color-text-inverse: #FFFFFF;
+  --color-bg-page: #F7F9FA;
+  --color-bg-card: #FFFFFF;
+  --color-divider: #F2F4F5;
+  --font-page-title: 20px;
+  --font-title: 16px;
+  --font-subtitle: 14px;
+  --font-body: 14px;
+  --font-caption: 12px;
+  --font-weight-normal: 500;
+  --font-weight-bold: 600;
+  --radius-card: 24px;
+  --radius-input: 52px;
+  --radius-sm: 8px;
+  --page-padding: 16px;
+  --card-padding: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { font-size:16px; }
+body {
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background:var(--color-bg-page); color:var(--color-text-primary); -webkit-font-smoothing:antialiased;
+}
+#app {
+  width:100%; max-width:430px; margin:0 auto; background:var(--color-bg-page);
+  min-height:100vh; position:relative; overflow-x:hidden;
+}
+
+/* ===== 状态栏 ===== */
+.status-bar {
+  height:44px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--page-padding); font-size:15px; font-weight:var(--font-weight-bold);
+  background:#FFFFFF; color:var(--color-text-primary);
+  position:sticky; top:0; z-index:100;
+}
+.status-bar .time { letter-spacing:0.5px; }
+.status-bar .right { display:flex; align-items:center; gap:4px; }
+
+/* ===== 导航栏 ===== */
+.nav-bar {
+  height:44px; display:grid; grid-template-columns:40px 1fr 40px;
+  align-items:center; justify-items:center;
+  padding:0 var(--page-padding); background:#FFFFFF;
+  position:sticky; top:44px; z-index:99;
+  border-bottom:1px solid var(--color-divider);
+}
+.nav-bar .back-placeholder { width:36px; justify-self:start; }
+.nav-bar .title { font-size:var(--font-page-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); text-align:center; }
+.nav-bar .right-placeholder { width:36px; justify-self:end; }
+
+/* ===== Hero Banner ===== */
+.hero-card { position:relative; overflow:hidden; width:100%; }
+.hero-card .banner-img { width:100%; height:240px; object-fit:cover; display:block; }
+
+/* ===== 页面内容 ===== */
+.page-content {
+  position:relative; z-index:2;
+  margin-top:-24px;
+}
+.content-card {
+  background:var(--color-bg-card); border-radius:var(--radius-card) var(--radius-card) 0 0;
+  padding:var(--card-padding); padding-bottom:120px;
+}
+
+/* ===== 赛事介绍 ===== */
+.event-title { font-size:22px; font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:24px; text-align:center; }
+
+/* ===== 填写说明 ===== */
+.event-guide { margin-bottom:24px; }
+.guide-title { font-size:var(--font-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:8px; }
+.guide-text { font-size:var(--font-body); color:var(--color-text-secondary); line-height:1.6; }
+.guide-text strong { color:var(--color-text-primary); }
+
+/* ===== 注意事项 ===== */
+.event-notice { margin-bottom:32px; }
+.notice-title { font-size:var(--font-title); font-weight:var(--font-weight-bold); color:var(--color-text-primary); margin-bottom:12px; }
+.notice-item {
+  display:flex; gap:8px; font-size:var(--font-body); color:var(--color-text-secondary);
+  line-height:1.6; margin-bottom:8px;
+}
+.notice-item:last-child { margin-bottom:0; }
+.notice-dot { color:var(--color-text-tertiary); flex-shrink:0; }
+
+/* ===== 按钮 ===== */
+.btn-primary {
+  width:100%; height:52px; border:none; border-radius:var(--radius-input); background:var(--color-brand);
+  color:var(--color-text-inverse); font-size:var(--font-title); font-weight:var(--font-weight-bold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:background .2s; gap:6px;
+}
+.btn-primary:active { background:var(--color-brand-active); }
+.btn-start { margin-top:24px; }
+
+/* ===== 演示面板 ===== */
+.demo-panel {
+  position:fixed; top:50%; right:0; transform:translateY(-50%);
+  z-index:9999; display:flex; flex-direction:row-reverse; align-items:flex-start;
+}
+.demo-toggle {
+  width:40px; height:40px; background:var(--color-brand); color:var(--color-text-inverse); border:none;
+  border-radius:8px 0 0 8px; font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.demo-body {
+  background:#1E293B; color:#F1F5F9; border-radius:8px 0 0 8px;
+  padding:12px; min-width:180px; font-size:12px; display:none;
+}
+.demo-panel.open .demo-body { display:block; }
+.demo-section { margin-bottom:10px; }
+.demo-section-title { font-size:11px; color:#94A3B8; font-weight:600; margin-bottom:6px; }
+.demo-btn {
+  display:block; width:100%; padding:6px 10px; margin-bottom:4px;
+  background:#334155; color:#F1F5F9; border:none; border-radius:6px;
+  font-size:12px; cursor:pointer; text-align:left; transition:background .15s;
+}
+.demo-btn:hover { background:#475569; }
+.demo-btn.active { background:var(--color-brand); }
+.demo-divider { border:none; border-top:1px solid #334155; margin:8px 0; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="right">
+      <span style="letter-spacing:-1px;">&#9679;&#9679;&#9679;</span>
+      <span>5G</span>
+      <span>&#128267;</span>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="back-placeholder"></div>
+    <div class="title">AISE工程信息收集</div>
+    <div class="right-placeholder"></div>
+  </div>
+
+  <!-- Hero Banner -->
+  <div class="hero-card">
+    <img class="banner-img" src="banner-bg.jpeg" alt="AISE 赛事" />
+  </div>
+
+  <!-- 入口内容 -->
+  <div class="page-content">
+    <div class="content-card">
+      <div class="event-title">AISE工程信息收集</div>
+
+      <!-- 填写说明 -->
+      <div class="event-guide">
+        <div class="guide-title">填写说明</div>
+        <div class="guide-text">本次信息收集需要您提前准备好您孩子的<strong>身份证</strong>及<strong>电子版证件照</strong>，请按页面提示完成填写。</div>
+      </div>
+
+      <!-- 注意事项 -->
+      <div class="event-notice">
+        <div class="notice-title">注意事项</div>
+        <div class="notice-item">
+          <span class="notice-dot">&#8226;</span>
+          <span>填写的信息仅用于AISE工程等级考试，收集的信息将同步至AISE官方；</span>
+        </div>
+        <div class="notice-item">
+          <span class="notice-dot">&#8226;</span>
+          <span>当前流程仅为信息收集、正式报名需待报名开启后在AISE官网完成。</span>
+        </div>
+      </div>
+
+      <button class="btn-primary btn-start" onclick="startRegister()">
+        去填写 &#8250;
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 演示面板 ===== -->
+<div id="dp" class="demo-panel open">
+  <button class="demo-toggle" onclick="dToggle()">&#10005;</button>
+  <div class="demo-body" id="db">
+    <div class="demo-section">
+      <div class="demo-section-title">页面</div>
+      <button class="demo-btn active">P0 入口</button>
+      <button class="demo-btn" onclick="location.href='p1-login.html'">P1 登录</button>
+      <button class="demo-btn" onclick="location.href='p2-form.html'">P2 信息填写</button>
+      <button class="demo-btn" onclick="location.href='p3-result.html'">P3 结果</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 演示面板 ===== */
+function dToggle() {
+  const p = document.getElementById('dp');
+  const b = document.getElementById('db');
+  const isOpen = p.classList.toggle('open');
+  b.style.display = isOpen ? 'block' : 'none';
+  p.querySelector('.demo-toggle').textContent = isOpen ? '\u2715' : '\u2699';
+}
+
+function startRegister() {
+  location.href = 'p1-login.html';
+}
+</script>
+</body>
+</html>
